@@ -20,19 +20,107 @@ runs_on_grid_or_windows_or_other = "Windows/Linux/MacOS"
 git_repo_URL = ""
 README_file_path = "./README.md"
 
-[notebooks]
+# [notebooks]
 
 
-[notebooks.01_example_notebook_interactive]
-notebook_name = "Example Notebook Interactive"
-notebook_description = "Example notebook for demonstrating how to construct a Chartbook notebook."
-notebook_path = "_output/01_example_notebook_interactive.ipynb"
+# [notebooks.01_example_notebook_interactive]
+# notebook_name = "Example Notebook Interactive"
+# notebook_description = "Example notebook for demonstrating how to construct a Chartbook notebook."
+# notebook_path = "_output/01_example_notebook_interactive.ipynb"
 
 
 
 
 [dataframes]
+[dataframes.compustat]
+data_sources = ["Compustat North America"]
+data_providers = ["WRDS"]
+how_is_pulled = "Pulled via WRDS SQL query from comp.funda"
+path_to_parquet_data = "_data/Compustat.parquet"
+dataframe_docs_str = "Firm-level accounting fundamentals used to construct balance-sheet variables."
+date_col = "datadate"
+
+[dataframes.crsp_comp_link]
+data_sources = ["CRSP–Compustat Link Table"]
+data_providers = ["WRDS"]
+how_is_pulled = "Pulled from CRSP CCM linking table"
+path_to_parquet_data = "_data/CRSP_Comp_Link_Table.parquet"
+dataframe_docs_str = "Link table connecting CRSP securities to Compustat firms."
+date_col = "linkdt"
+
+[dataframes.crsp_msf]
+data_sources = ["CRSP Monthly Stock File"]
+data_providers = ["WRDS"]
+how_is_pulled = "Pulled from CRSP MSF v2 and processed"
+path_to_parquet_data = "_data/CRSP_MSF_INDEX_INPUTS.parquet"
+dataframe_docs_str = "Monthly CRSP stock-level data used to compute returns and market equity."
+date_col = "date"
+
+[dataframes.crsp_msix]
+data_sources = ["CRSP Market Indexes"]
+data_providers = ["WRDS"]
+how_is_pulled = "Pulled from CRSP MSIX table"
+path_to_parquet_data = "_data/CRSP_MSIX.parquet"
+dataframe_docs_str = "CRSP market index data including value-weighted and equal-weighted returns."
+date_col = "caldt"
+
+[dataframes.crsp_stock_ciz]
+data_sources = ["CRSP Stock File (CIZ format)"]
+data_providers = ["WRDS"]
+how_is_pulled = "Pulled from CRSP msf_v2 using CIZ format"
+path_to_parquet_data = "_data/CRSP_stock_ciz.parquet"
+dataframe_docs_str = "CRSP stock data in CIZ format with monthly returns and prices."
+date_col = "mthcaldt"
+
+[dataframes.ff_factors]
+data_sources = ["Fama–French Factors"]
+data_providers = ["WRDS"]
+how_is_pulled = "Pulled from WRDS ff.factors_monthly table"
+path_to_parquet_data = "_data/FF_FACTORS.parquet"
+dataframe_docs_str = "Fama–French factor returns used as benchmark market measures."
+date_col = "date"
 
 
 [charts]
+[charts.compustat_assets]
+chart_name = "Average Assets by Year"
+short_description_chart = "Average total assets across Compustat firms by year."
+dataframe_id = "compustat"
+path_to_html_chart = "_output/Compustat.html"
+chart_docs_str = "Exploratory chart to verify Compustat data retrieval."
+
+[charts.crsp_comp_links]
+chart_name = "CRSP–Compustat Links Over Time"
+short_description_chart = "Number of valid CRSP–Compustat links by year."
+dataframe_id = "crsp_comp_link"
+path_to_html_chart = "_output/CRSP_Comp_Link_Table.html"
+chart_docs_str = "Exploratory chart showing the number of CRSP–Compustat links over time."
+
+[charts.crsp_msf_returns]
+chart_name = "Average Monthly Stock Returns"
+short_description_chart = "Average monthly stock returns from CRSP MSF."
+dataframe_id = "crsp_msf"
+path_to_html_chart = "_output/CRSP_MSF_Index_Inputs.html"
+chart_docs_str = "Exploratory chart of average monthly stock returns from CRSP MSF."
+
+[charts.crsp_msix_vw]
+chart_name = "Value-Weighted Market Returns"
+short_description_chart = "CRSP value-weighted market index returns."
+dataframe_id = "crsp_msix"
+path_to_html_chart = "_output/CRSP_MSIX.html"
+chart_docs_str = "Exploratory chart of CRSP market index returns."
+
+[charts.crsp_stock_returns]
+chart_name = "Average Monthly Stock Returns"
+short_description_chart = "Average monthly stock returns from CRSP CIZ data."
+dataframe_id = "crsp_stock_ciz"
+path_to_html_chart = "_output/CRSP_stock_ciz.html"
+chart_docs_str = "Exploratory chart of average monthly stock returns from CRSP CIZ data."
+
+[charts.ff_market]
+chart_name = "Market Excess Return"
+short_description_chart = "Monthly market excess returns from Fama–French."
+dataframe_id = "ff_factors"
+path_to_html_chart = "_output/FF_Factors.html"
+chart_docs_str = "Exploratory chart of Fama–French market excess returns."
 

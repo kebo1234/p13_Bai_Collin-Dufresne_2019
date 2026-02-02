@@ -152,6 +152,27 @@ def task_pull():
     }
 
 
+def task_generate_charts():
+    """Generate simple exploratory charts for all datasets"""
+
+    file_dep = ["./src/generate_chart.py"]
+    targets = [OUTPUT_DIR / f"{name.replace('.parquet', '')}.html" for name in [
+        "Compustat.parquet",
+        "CRSP_Comp_Link_Table.parquet",
+        "CRSP_MSF_Index_Inputs.parquet",
+        "CRSP_MSIX.parquet",
+        "CRSP_stock_ciz.parquet",
+        "FF_Factors.parquet"
+    ]]
+
+    return {
+        "actions": ["python ./src/generate_chart.py"],
+        "file_dep": file_dep,
+        "targets": targets,
+        "clean": True,
+    }
+
+
 # def task_summary_stats():
 #     """Generate summary statistics tables"""
 #     file_dep = ["./src/example_table.py"]

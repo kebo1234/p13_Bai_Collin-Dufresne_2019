@@ -1,0 +1,14 @@
+Name,Metadata Complete,Object Type,Identifier,Pipeline,Missing Fields,Page Link
+p13_Bai_Collin-Dufresne_2019,False,pipeline,P1,P1,"build_commands, os_compatibility, git_repo_URL",../index.html
+compustat,False,dataframe,compustat,P1,"dataframe_name, short_description_df, links_to_data_providers, topic_tags",../dataframes/P1/compustat.html
+crsp_comp_link,False,dataframe,crsp_comp_link,P1,"dataframe_name, short_description_df, links_to_data_providers, topic_tags",../dataframes/P1/crsp_comp_link.html
+crsp_msf,False,dataframe,crsp_msf,P1,"dataframe_name, short_description_df, links_to_data_providers, topic_tags",../dataframes/P1/crsp_msf.html
+crsp_msix,False,dataframe,crsp_msix,P1,"dataframe_name, short_description_df, links_to_data_providers, topic_tags",../dataframes/P1/crsp_msix.html
+crsp_stock_ciz,False,dataframe,crsp_stock_ciz,P1,"dataframe_name, short_description_df, links_to_data_providers, topic_tags",../dataframes/P1/crsp_stock_ciz.html
+ff_factors,False,dataframe,ff_factors,P1,"dataframe_name, short_description_df, links_to_data_providers, topic_tags",../dataframes/P1/ff_factors.html
+Average Assets by Year,False,chart,compustat_assets,P1,"topic_tags, data_frequency, observation_period, lag_in_data_release, data_release_timing, units",../charts/P1.compustat_assets.html
+CRSP–Compustat Links Over Time,False,chart,crsp_comp_links,P1,"topic_tags, data_frequency, observation_period, lag_in_data_release, data_release_timing, units",../charts/P1.crsp_comp_links.html
+Average Monthly Stock Returns,False,chart,crsp_msf_returns,P1,"topic_tags, data_frequency, observation_period, lag_in_data_release, data_release_timing, units",../charts/P1.crsp_msf_returns.html
+Value-Weighted Market Returns,False,chart,crsp_msix_vw,P1,"topic_tags, data_frequency, observation_period, lag_in_data_release, data_release_timing, units",../charts/P1.crsp_msix_vw.html
+Average Monthly Stock Returns,False,chart,crsp_stock_returns,P1,"topic_tags, data_frequency, observation_period, lag_in_data_release, data_release_timing, units",../charts/P1.crsp_stock_returns.html
+Market Excess Return,False,chart,ff_market,P1,"topic_tags, data_frequency, observation_period, lag_in_data_release, data_release_timing, units",../charts/P1.ff_market.html

@@ -1,6 +1,6 @@
 """
-This module pulls and saves bond ratings data from LSEG (formerly Thomson Reuters)
-and Mergent FISD (Fixed Income Securities Database).
+This module pulls and saves bond ratings data from Mergent FISD 
+(Fixed Income Securities Database).
 
 The Mergent FISD database contains comprehensive information on publicly offered
 U.S. corporate bonds, including:
@@ -8,14 +8,8 @@ U.S. corporate bonds, including:
 - Credit ratings from major agencies (S&P, Moody's, Fitch)
 - Issuer information
 
-LSEG Datastream provides additional bond market data and can supplement FISD data.
-
 For information about Mergent FISD variables, see:
 https://wrds-www.wharton.upenn.edu/documents/1364/Mergent_FISD_Manual.pdf
-
-Useful WRDS support pages:
-- Mergent FISD Overview: https://wrds-www.wharton.upenn.edu/pages/get-data/mergent-fixed-income-securities-database-fisd/
-- LSEG Datastream: https://wrds-www.wharton.upenn.edu/pages/get-data/lseg-datastream/
 
 """
 
@@ -34,39 +28,22 @@ WRDS_USERNAME = config("WRDS_USERNAME")
 
 description_mergent_fisd_issue = {
     "complete_cusip": "Complete CUSIP - 9-character CUSIP identifier",
-    "issuer_cusip": "Issuer CUSIP - 6-character issuer identifier (first 6 digits of CUSIP)",
+    "issuer_cusip": "Issuer CUSIP - 6-character issuer identifier",
     "issue_id": "Issue ID - Unique identifier for the bond issue in FISD",
     "issuer_id": "Issuer ID - Unique identifier for the issuer in FISD",
     "prospectus_issuer_name": "Issuer Name - Name of the issuing company",
     "offering_date": "Offering Date - Date when the bond was first offered",
-    "dated_date": "Dated Date - Date from which interest starts accruing",
     "maturity": "Maturity Date - Date when the bond matures",
-    "offering_amt": "Offering Amount - Original principal amount of the issue (in thousands)",
-    "offering_price": "Offering Price - Original offering price (as percentage of par)",
-    "coupon": "Coupon Rate - Annual coupon rate (as percentage)",
-    "coupon_type": "Coupon Type - Type of coupon (e.g., Fixed, Variable)",
-    "interest_frequency": "Interest Payment Frequency - Number of coupon payments per year",
-    "day_count_basis": "Day Count Basis - Convention for calculating accrued interest",
-    "callable": "Callable Flag - Whether the bond is callable",
-    "putable": "Putable Flag - Whether the bond is putable",
-    "convertible": "Convertible Flag - Whether the bond is convertible",
-    "security_level": "Security Level - Seniority level of the bond",
-    "security_pledge": "Security Pledge - Type of collateral/security",
-    "bond_type": "Bond Type - Classification of bond type",
-    "private_placement": "Private Placement Flag - Whether privately placed",
-    "defaulted": "Defaulted Flag - Whether the bond has defaulted",
-    "settlement": "Settlement Type - Settlement convention",
 }
 
 
 description_mergent_fisd_ratings = {
-    "complete_cusip": "Complete CUSIP - 9-character CUSIP identifier",
     "issue_id": "Issue ID - Unique identifier for the bond issue",
+    "rating_type": "Rating Type - Type of rating (SPR=S&P, MR=Moody's, FR=Fitch)",
     "rating_date": "Rating Date - Date of the rating",
-    "rating_type": "Rating Type - Type of rating (e.g., SPR for S&P, MR for Moody's, FR for Fitch)",
     "rating": "Rating - The credit rating assigned",
-    "investment_grade": "Investment Grade Flag - Whether the rating is investment grade",
-    "rating_status": "Rating Status - Status of the rating (e.g., Current, Withdrawn)",
+    "rating_status": "Rating Status - Status of the rating",
+    "investment_grade": "Investment Grade Flag - Whether rating is investment grade",
 }
 
 
@@ -88,13 +65,8 @@ def pull_mergent_fisd_issue(wrds_username=WRDS_USERNAME, start_date="01/01/1990"
     """
     sql_query = f"""
         SELECT 
-            complete_cusip, issuer_cusip, issue_id, issuer_id,
-            prospectus_issuer_name, offering_date, dated_date, maturity,
-            offering_amt, offering_price, coupon, coupon_type,
-            interest_frequency, day_count_basis,
-            callable, putable, convertible,
-            security_level, security_pledge, bond_type,
-            private_placement, defaulted, settlement
+            issue_id, issuer_id, complete_cusip, issuer_cusip,
+            prospectus_issuer_name, offering_date, maturity
         FROM 
             fisd.fisd_mergedissue
         WHERE 
@@ -104,7 +76,7 @@ def pull_mergent_fisd_issue(wrds_username=WRDS_USERNAME, start_date="01/01/1990"
     db = wrds.Connection(wrds_username=wrds_username)
     fisd_issue = db.raw_sql(
         sql_query, 
-        date_cols=["offering_date", "dated_date", "maturity"]
+        date_cols=["offering_date", "maturity"]
     )
     db.close()
     
@@ -113,12 +85,12 @@ def pull_mergent_fisd_issue(wrds_username=WRDS_USERNAME, start_date="01/01/1990"
 
 def pull_mergent_fisd_ratings(wrds_username=WRDS_USERNAME, start_date="01/01/1990"):
     """
-    Pull bond ratings history from Mergent FISD.
+    Pull bond ratings from Mergent FISD.
     
     This includes ratings from:
-    - S&P (SPR - S&P Rating)
-    - Moody's (MR - Moody's Rating)
-    - Fitch (FR - Fitch Rating)
+    - S&P (rating_type = 'SPR')
+    - Moody's (rating_type = 'MR')
+    - Fitch (rating_type = 'FR')
     
     Parameters
     ----------
@@ -130,18 +102,18 @@ def pull_mergent_fisd_ratings(wrds_username=WRDS_USERNAME, start_date="01/01/199
     Returns
     -------
     pd.DataFrame
-        DataFrame containing bond ratings history
+        DataFrame containing bond ratings
     """
     sql_query = f"""
         SELECT 
-            complete_cusip, issue_id, rating_date,
-            rating_type, rating, investment_grade, rating_status
+            issue_id, rating_type, rating_date, rating,
+            rating_status, investment_grade
         FROM 
-            fisd.fisd_mergedratings
+            fisd.fisd_ratings
         WHERE 
             rating_date >= '{start_date}'
         ORDER BY 
-            complete_cusip, rating_date
+            issue_id, rating_date
         """
     
     db = wrds.Connection(wrds_username=wrds_username)
@@ -151,38 +123,24 @@ def pull_mergent_fisd_ratings(wrds_username=WRDS_USERNAME, start_date="01/01/199
     return fisd_ratings
 
 
-def pull_mergent_fisd_ratings_current(wrds_username=WRDS_USERNAME):
+def merge_issue_ratings(issue_df, ratings_df):
     """
-    Pull current (most recent) bond ratings from Mergent FISD.
-    
-    This is useful for getting the latest rating for each bond without
-    the full history.
+    Merge issue and ratings data.
     
     Parameters
     ----------
-    wrds_username : str
-        WRDS username for database connection
+    issue_df : pd.DataFrame
+        DataFrame from pull_mergent_fisd_issue
+    ratings_df : pd.DataFrame
+        DataFrame from pull_mergent_fisd_ratings
     
     Returns
     -------
     pd.DataFrame
-        DataFrame containing current bond ratings
+        Merged DataFrame with bond characteristics and ratings
     """
-    sql_query = """
-        SELECT 
-            complete_cusip, issue_id, rating_date,
-            rating_type, rating, investment_grade, rating_status
-        FROM 
-            fisd.fisd_mergedratings
-        WHERE 
-            rating_status = 'Current'
-        """
-    
-    db = wrds.Connection(wrds_username=wrds_username)
-    fisd_ratings_current = db.raw_sql(sql_query, date_cols=["rating_date"])
-    db.close()
-    
-    return fisd_ratings_current
+    merged = ratings_df.merge(issue_df, on='issue_id', how='left')
+    return merged
 
 
 def get_sp_rating_numeric(rating):
@@ -201,6 +159,9 @@ def get_sp_rating_numeric(rating):
     int
         Numeric score (1-22, or 0 for unrated/unknown)
     """
+    if pd.isna(rating):
+        return 0
+    
     rating_map = {
         'AAA': 22, 'AA+': 21, 'AA': 20, 'AA-': 19,
         'A+': 18, 'A': 17, 'A-': 16,
@@ -229,6 +190,9 @@ def get_moodys_rating_numeric(rating):
     int
         Numeric score (1-21, or 0 for unrated/unknown)
     """
+    if pd.isna(rating):
+        return 0
+    
     rating_map = {
         'Aaa': 21, 'Aa1': 20, 'Aa2': 19, 'Aa3': 18,
         'A1': 17, 'A2': 16, 'A3': 15,
@@ -241,23 +205,61 @@ def get_moodys_rating_numeric(rating):
     return rating_map.get(rating, 0)
 
 
+def filter_sp_ratings(ratings_df):
+    """
+    Filter to S&P ratings only and add numeric rating.
+    
+    Parameters
+    ----------
+    ratings_df : pd.DataFrame
+        DataFrame with ratings
+    
+    Returns
+    -------
+    pd.DataFrame
+        Filtered to S&P ratings with numeric score added
+    """
+    sp = ratings_df[ratings_df['rating_type'] == 'SPR'].copy()
+    sp['rating_numeric'] = sp['rating'].apply(get_sp_rating_numeric)
+    return sp
+
+
+def filter_moodys_ratings(ratings_df):
+    """
+    Filter to Moody's ratings only and add numeric rating.
+    
+    Parameters
+    ----------
+    ratings_df : pd.DataFrame
+        DataFrame with ratings
+    
+    Returns
+    -------
+    pd.DataFrame
+        Filtered to Moody's ratings with numeric score added
+    """
+    moodys = ratings_df[ratings_df['rating_type'] == 'MR'].copy()
+    moodys['rating_numeric'] = moodys['rating'].apply(get_moodys_rating_numeric)
+    return moodys
+
+
 def process_ratings_to_monthly(ratings_df, rating_type='SPR'):
     """
-    Convert ratings history to monthly panel data.
+    Convert ratings to monthly panel format.
     
     For each bond-month, assigns the most recent rating as of that month-end.
     
     Parameters
     ----------
     ratings_df : pd.DataFrame
-        DataFrame from pull_mergent_fisd_ratings
+        DataFrame from pull_mergent_fisd_ratings (or merged data)
     rating_type : str
-        Rating type to filter ('SPR', 'MR', or 'FR')
+        Rating type to filter ('SPR' for S&P, 'MR' for Moody's, 'FR' for Fitch)
     
     Returns
     -------
     pd.DataFrame
-        Monthly panel with columns: complete_cusip, month_end, rating, rating_numeric
+        Monthly panel with columns: issue_id, month_end, rating, rating_numeric
     """
     # Filter to specific rating type
     df = ratings_df[ratings_df['rating_type'] == rating_type].copy()
@@ -265,11 +267,11 @@ def process_ratings_to_monthly(ratings_df, rating_type='SPR'):
     # Add month-end date
     df['month_end'] = df['rating_date'] + MonthEnd(0)
     
-    # Sort by CUSIP and date
-    df = df.sort_values(['complete_cusip', 'rating_date'])
+    # Sort by issue_id and date
+    df = df.sort_values(['issue_id', 'rating_date'])
     
     # For each month, keep the last rating observation
-    df = df.drop_duplicates(['complete_cusip', 'month_end'], keep='last')
+    df = df.drop_duplicates(['issue_id', 'month_end'], keep='last')
     
     # Add numeric rating
     if rating_type == 'SPR':
@@ -277,7 +279,13 @@ def process_ratings_to_monthly(ratings_df, rating_type='SPR'):
     elif rating_type == 'MR':
         df['rating_numeric'] = df['rating'].apply(get_moodys_rating_numeric)
     
-    return df[['complete_cusip', 'month_end', 'rating', 'rating_numeric', 'investment_grade']]
+    cols = ['issue_id', 'month_end', 'rating', 'rating_numeric', 'investment_grade']
+    
+    # Include complete_cusip if available
+    if 'complete_cusip' in df.columns:
+        cols = ['issue_id', 'complete_cusip'] + cols[1:]
+    
+    return df[cols]
 
 
 def load_mergent_fisd_issue(data_dir=DATA_DIR):
@@ -294,37 +302,28 @@ def load_mergent_fisd_ratings(data_dir=DATA_DIR):
     return fisd_ratings
 
 
-def load_mergent_fisd_ratings_current(data_dir=DATA_DIR):
-    """Load saved Mergent FISD current ratings data."""
-    path = Path(data_dir) / "Mergent_FISD_ratings_current.parquet"
-    fisd_ratings_current = pd.read_parquet(path)
-    return fisd_ratings_current
-
-
 def _demo():
-    """Demonstrate loading the saved data."""
+    """Demonstrate loading and processing the saved data."""
     fisd_issue = load_mergent_fisd_issue(data_dir=DATA_DIR)
     fisd_ratings = load_mergent_fisd_ratings(data_dir=DATA_DIR)
-    fisd_ratings_current = load_mergent_fisd_ratings_current(data_dir=DATA_DIR)
-   
     
-    # Show example of processing ratings to monthly
-    if len(fisd_ratings) > 0:
-        monthly_sp = process_ratings_to_monthly(fisd_ratings, rating_type='SPR')
-    # is this necessary?
+    # Merge issue and ratings
+    merged = merge_issue_ratings(fisd_issue, fisd_ratings)
+    
+    # Show example of S&P ratings
+    sp_ratings = filter_sp_ratings(merged)
 
-
+    # Show example of monthly panel
+    monthly_sp = process_ratings_to_monthly(merged, rating_type='SPR')
+    
 if __name__ == "__main__":
     # Pull and save Mergent FISD issue data
+    print("Pulling Mergent FISD issue data...")
     fisd_issue = pull_mergent_fisd_issue(wrds_username=WRDS_USERNAME)
     fisd_issue.to_parquet(DATA_DIR / "Mergent_FISD_issue.parquet")
     
-    # Pull and save Mergent FISD ratings history
-    print("\nPulling Mergent FISD ratings history...")
+    # Pull and save Mergent FISD ratings
     fisd_ratings = pull_mergent_fisd_ratings(wrds_username=WRDS_USERNAME)
     fisd_ratings.to_parquet(DATA_DIR / "Mergent_FISD_ratings.parquet")
     
-    # Pull and save current ratings
-    fisd_ratings_current = pull_mergent_fisd_ratings_current(wrds_username=WRDS_USERNAME)
-    fisd_ratings_current.to_parquet(DATA_DIR / "Mergent_FISD_ratings_current.parquet")
     

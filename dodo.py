@@ -158,9 +158,9 @@ def task_generate_charts():
     file_dep = ["./src/generate_chart.py"]
     targets = [OUTPUT_DIR / f"{name.replace('.parquet', '')}.html" for name in [
         "Compustat.parquet",
-        #"CRSP_Comp_Link_Table.parquet",
-        #"CRSP_MSF_Index_Inputs.parquet",
-        #"CRSP_MSIX.parquet",
+        "CRSP_Comp_Link_Table.parquet",
+        "CRSP_MSF_Index_Inputs.parquet",
+        "CRSP_MSIX.parquet",
         "CRSP_stock_ciz.parquet",
         "FF_Factors.parquet"
     ]]

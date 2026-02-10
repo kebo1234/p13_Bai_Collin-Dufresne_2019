@@ -14,6 +14,16 @@ WRDS_USERNAME = config("WRDS_USERNAME")
 START_YEAR = 2006
 END_YEAR = 2026
 
+description_cds = {
+    "date": "Observation date",
+    "ticker": "Reference entity ticker",
+    "redcode": "Markit reference entity code",
+    "tenor": "Contract maturity (e.g., 5Y)",
+    "currency": "Contract currency",
+    "docclause": "ISDA documentation clause",
+    "parspread": "Par CDS spread (bps per annum)"
+}
+
 def pull_CDS(wrds_username=WRDS_USERNAME):
     db = wrds.Connection(wrds_username=wrds_username)
 

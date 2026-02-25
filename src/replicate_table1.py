@@ -39,6 +39,7 @@ def add_crisis_phases(df):
     df.loc[(df['date'] >= '2007-07-01') & (df['date'] < '2008-09-01'), 'phase'] = 'Crisis I'
     df.loc[(df['date'] >= '2008-09-01') & (df['date'] < '2009-10-01'), 'phase'] = 'Crisis II'
     df.loc[df['date'] >= '2009-10-01', 'phase'] = 'Post-crisis'
+    df.loc[df['date'] >= '2015-01-01', 'phase'] = 'Extended'
     
     return df
 
@@ -203,19 +204,22 @@ def create_table1(basis_df):
 def export_to_latex(table1, filename="table1_replication.tex"):
     """Export Table 1 to LaTeX format matching the paper's style."""
     
+    # Get date range for Extended period
+    # (will be shown in column header)
+    
     # Create multi-level column headers for LaTeX
     latex_str = r"""\begin{table}[htbp]
 \centering
 \caption{Summary statistics of discrepancies in CDS and cash bond spreads}
 \label{tab:table1}
 \small
-\begin{tabular}{l rrrr rrrr rrrr rrrr}
+\begin{tabular}{l rrrr rrrr rrrr rrrr rrrr}
 \hline\hline
-& \multicolumn{4}{c}{Before Crisis} & \multicolumn{4}{c}{Crisis I} & \multicolumn{4}{c}{Crisis II} & \multicolumn{4}{c}{Post-crisis} \\
-\cline{2-5} \cline{6-9} \cline{10-13} \cline{14-17}
-& \multicolumn{4}{c}{July 2006--June 2007} & \multicolumn{4}{c}{July 2007--Aug. 2008} & \multicolumn{4}{c}{Sept. 2008--Sept. 2009} & \multicolumn{4}{c}{Oct. 2009--Dec. 2014} \\
-\cline{2-5} \cline{6-9} \cline{10-13} \cline{14-17}
-& Mean & SD & P10 & P90 & Mean & SD & P10 & P90 & Mean & SD & P10 & P90 & Mean & SD & P10 & P90 \\
+& \multicolumn{4}{c}{Before Crisis} & \multicolumn{4}{c}{Crisis I} & \multicolumn{4}{c}{Crisis II} & \multicolumn{4}{c}{Post-crisis} & \multicolumn{4}{c}{Extended} \\
+\cline{2-5} \cline{6-9} \cline{10-13} \cline{14-17} \cline{18-21}
+& \multicolumn{4}{c}{July 2006--June 2007} & \multicolumn{4}{c}{July 2007--Aug. 2008} & \multicolumn{4}{c}{Sept. 2008--Sept. 2009} & \multicolumn{4}{c}{Oct. 2009--Dec. 2014} & \multicolumn{4}{c}{Jan. 2015--Present} \\
+\cline{2-5} \cline{6-9} \cline{10-13} \cline{14-17} \cline{18-21}
+& Mean & SD & P10 & P90 & Mean & SD & P10 & P90 & Mean & SD & P10 & P90 & Mean & SD & P10 & P90 & Mean & SD & P10 & P90 \\
 \hline
 """
     
@@ -224,7 +228,7 @@ def export_to_latex(table1, filename="table1_replication.tex"):
         cat = row['Category']
         latex_str += f"{cat}"
         
-        for phase in ['Before Crisis', 'Crisis I', 'Crisis II', 'Post-crisis']:
+        for phase in ['Before Crisis', 'Crisis I', 'Crisis II', 'Post-crisis', 'Extended']:
             mean = row[f'{phase}_Mean']
             sd = row[f'{phase}_SD']
             p10 = row[f'{phase}_P10']
@@ -245,7 +249,7 @@ def export_to_latex(table1, filename="table1_replication.tex"):
 \end{tabular}
 \begin{flushleft}
 \footnotesize
-\textit{Notes:} This table provides the descriptive statistics for the average CDS-bond basis in four phases. Phase 1 is the period prior to the subprime credit crisis, ``Before Crisis'' (July 2006--June 2007), Phase 2 is the period between the subprime credit crisis and the bankruptcy of Lehman Brothers, ``Crisis I'' (July 2007--August 2008), Phase 3 is the period after Lehman Brothers' failure, ``Crisis II'' (September 2008--September 2009), and Phase 4 is the period after the financial crisis, ``Post-crisis'' (October 2009--December 2014). The basis is calculated as the difference between the CDS spread and the par equivalent corporate bond spread using the methodology in the Appendix. The summary statistics are reported for all bonds (ALL), investment-grade bonds (IG), high-yield bonds (HY), as well as across rating categories: AAA/AA, A, BBB, BB, B, and CCC. We calculate the cross-sectional mean, standard deviation, the 10th and the 90th percentile value of the bases across all bonds each day, and report the time-series average of these statistics. All entries are in basis points.
+\textit{Notes:} This table provides the descriptive statistics for the average CDS-bond basis across five periods. Phase 1 is the period prior to the subprime credit crisis, ``Before Crisis'' (July 2006--June 2007), Phase 2 is the period between the subprime credit crisis and the bankruptcy of Lehman Brothers, ``Crisis I'' (July 2007--August 2008), Phase 3 is the period after Lehman Brothers' failure, ``Crisis II'' (September 2008--September 2009), Phase 4 is the period after the financial crisis, ``Post-crisis'' (October 2009--December 2014), and Phase 5 is the extended period, ``Extended'' (January 2015--Present). The basis is calculated as the difference between the CDS spread and the par equivalent corporate bond spread using the methodology in the Appendix. The summary statistics are reported for all bonds (ALL), investment-grade bonds (IG), high-yield bonds (HY), as well as across rating categories: AAA/AA, A, BBB, BB, B, and CCC. We calculate the cross-sectional mean, standard deviation, the 10th and the 90th percentile value of the bases across all bonds each day, and report the time-series average of these statistics. All entries are in basis points.
 \end{flushleft}
 \end{table}
 """
@@ -314,7 +318,4 @@ if __name__ == "__main__":
     
     # Compare with paper
     print_comparison_with_paper(table1)
-    
-    print("\n" + "="*80)
-    print("DONE!")
-    print("="*80)
+

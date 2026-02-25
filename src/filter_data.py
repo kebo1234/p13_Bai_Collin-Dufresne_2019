@@ -13,7 +13,6 @@ Inputs:
     - CDS.parquet (from pull_CDS.py)
 
 Outputs:
-    - qualified_bonds.parquet
     - matched_bond_cds.parquet
 """
 
@@ -91,30 +90,6 @@ def filter_bonds(bond_prices):
     
     return df
 
-def add_ratings(bond_df, ratings_df):
-    """
-    Add Mergent FISD ratings to bond data.
-    
-    Per the paper:
-    - If rated by both Moody's and S&P, take average
-    - If rated by only one agency, use that rating
-    """
-    # Get most recent S&P rating per bond
-    sp = ratings_df[ratings_df['rating_type'] == 'SPR'].copy()
-    sp = sp.sort_values(['issue_id', 'rating_date']).groupby('issue_id').last()
-    sp = sp[['rating', 'investment_grade']].rename(columns={'rating': 'sp_rating', 'investment_grade': 'sp_ig'})
-    
-    # Get most recent Moody's rating per bond
-    moodys = ratings_df[ratings_df['rating_type'] == 'MR'].copy()
-    moodys = moodys.sort_values(['issue_id', 'rating_date']).groupby('issue_id').last()
-    moodys = moodys[['rating', 'investment_grade']].rename(columns={'rating': 'moodys_rating', 'investment_grade': 'moodys_ig'})
-    
-    # Merge ratings
-    df = bond_df.merge(sp, on='issue_id', how='left')
-    df = df.merge(moodys, on='issue_id', how='left')
-    
-    return df
-
 
 def filter_cds(cds_df):
     """
@@ -151,6 +126,31 @@ def filter_cds(cds_df):
     return df
 
 
+def add_ratings(bond_df, ratings_df):
+    """
+    Add Mergent FISD ratings to bond data.
+    
+    Per the paper:
+    - If rated by both Moody's and S&P, take average
+    - If rated by only one agency, use that rating
+    """
+    # Get most recent S&P rating per bond
+    sp = ratings_df[ratings_df['rating_type'] == 'SPR'].copy()
+    sp = sp.sort_values(['issue_id', 'rating_date']).groupby('issue_id').last()
+    sp = sp[['rating', 'investment_grade']].rename(columns={'rating': 'sp_rating', 'investment_grade': 'sp_ig'})
+    
+    # Get most recent Moody's rating per bond
+    moodys = ratings_df[ratings_df['rating_type'] == 'MR'].copy()
+    moodys = moodys.sort_values(['issue_id', 'rating_date']).groupby('issue_id').last()
+    moodys = moodys[['rating', 'investment_grade']].rename(columns={'rating': 'moodys_rating', 'investment_grade': 'moodys_ig'})
+    
+    # Merge ratings
+    df = bond_df.merge(sp, on='issue_id', how='left')
+    df = df.merge(moodys, on='issue_id', how='left')
+    
+    return df
+
+
 def match_bonds_to_cds(bonds_df, cds_df):
     """
     Match bonds to CDS entities via company_symbol = ticker.
@@ -176,14 +176,22 @@ def match_bonds_to_cds(bonds_df, cds_df):
     
     return merged
 
+
 if __name__ == "__main__":
     bond_prices, ratings, cds = load_all_data()
-    
-    filtered_bonds = filter_bonds(bond_prices)
-    qualified_bonds = add_ratings(filtered_bonds, ratings)
-    qualified_bonds.to_parquet(DATA_DIR / "qualified_bonds.parquet")
-    
-    filtered_cds = filter_cds(cds)
-    
-    matched = match_bonds_to_cds(qualified_bonds, filtered_cds)
-    matched.to_parquet(DATA_DIR / "matched_bond_cds.parquet")
+
+    # Filter based on paper's sample
+    bonds_sample = filter_bonds(bond_prices)
+    cds_sample = filter_cds(cds)
+
+    selected_issue_ids = bonds_sample['issue_id'].unique()
+    selected_symbols = bonds_sample['company_symbol'].unique()
+
+    # Store data for period extended to today (for extension later)
+    bonds_full = bond_prices[bond_prices['issue_id'].isin(selected_issue_ids)].copy()
+    bonds_full = add_ratings(bonds_full, ratings)
+    cds_full = cds[cds['ticker'].isin(selected_symbols)].copy()
+
+    matched_full = match_bonds_to_cds(bonds_full, cds_full)
+
+    matched_full.to_parquet(DATA_DIR / "matched_bond_cds.parquet")

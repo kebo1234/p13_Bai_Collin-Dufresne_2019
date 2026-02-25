@@ -23,8 +23,8 @@ from settings import config
 
 DATA_DIR = Path(config("DATA_DIR"))
 
-START_DATE = config('START_DATE')
-END_DATE = config('SAMPLE_END_DATE')
+START_DATE = pd.to_datetime(config('START_DATE'))
+END_DATE   = pd.to_datetime(config('SAMPLE_END_DATE'))
 
 def load_all_data():
     """Load bond prices, ratings, and CDS data."""

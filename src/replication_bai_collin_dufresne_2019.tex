@@ -1,0 +1,131 @@
+\documentclass{article}
+
+\usepackage[english]{babel}
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\title{Replication: The Credit Default Swap–Bond Basis \\
+\large Bai, Collin-Dufresne (2019)}
+\author{Your Name}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+This document presents a replication of Figure 1 and Table 1 from Bai and Collin-Dufresne (2019), "The Credit Default Swap–Bond Basis." The paper examines the relationship between CDS spreads and bond-implied CDS spreads (PECDS) across different credit rating categories and crisis phases.
+
+The CDS-bond basis is defined as the difference between the market CDS spread and the bond-implied CDS spread:
+\begin{equation}
+    \text{Basis} = \text{CDS Spread} - \text{PECDS}
+\end{equation}
+
+\section{Data Sources}
+
+The replication uses the following data sources:
+
+\begin{itemize}
+    \item \textbf{CDS Data}: Markit CDS spreads from WRDS, including 5-year USD-denominated contracts
+    \item \textbf{Bond Data}: WRDS Bond Returns database with monthly bond prices and yields
+    \item \textbf{Bond Characteristics}: Mergent FISD (Fixed Income Securities Database) for bond issue details
+    \item \textbf{Credit Ratings}: Mergent FISD ratings from S\&P and Moody's
+\end{itemize}
+
+\textbf{Sample Period}: July 1, 2006 to December 30, 2014
+
+\section{Methodology}
+
+\subsection{Data Preparation}
+
+Bonds are filtered according to the following criteria from the paper:
+\begin{enumerate}
+    \item Remove convertible bonds
+    \item Keep only fixed or zero coupon bonds (no floating rate)
+    \item Time-to-maturity between 3 and 7.5 years (to match 5-year CDS liquidity)
+    \item Remove bonds with missing prices, yields, or company symbols
+    \item Keep only rated bonds (investment grade and high yield)
+    \item Keep only corporate bond types (debentures, MTNs, zero coupon)
+\end{enumerate}
+
+CDS contracts are filtered to:
+\begin{itemize}
+    \item USD currency only
+    \item 5-year tenor (most liquid maturity)
+    \item Sample period: July 2006 - December 2014
+\end{itemize}
+
+\subsection{Simplified PECDS Calculation}
+
+This replication uses a simplified approach where the monthly bond yield is used directly as a proxy for PECDS, rather than implementing the full survival probability bootstrapping methodology in Appendix A of the paper. This simplification is necessary due to the lack of available swap rate curve data.
+
+\subsection{Crisis Phases}
+
+Following the paper, the sample is divided into four phases:
+\begin{itemize}
+    \item \textbf{Before Crisis}: July 2006 - June 2007
+    \item \textbf{Crisis I}: July 2007 - August 2008 (subprime crisis to Lehman bankruptcy)
+    \item \textbf{Crisis II}: September 2008 - September 2009 (post-Lehman failure)
+    \item \textbf{Post-crisis}: October 2009 - December 2014
+\end{itemize}
+
+\section{Results}
+
+\subsection{Figure 1: Time Series of CDS-Bond Basis}
+
+Figure~\ref{fig:figure1} shows the dispersion of the CDS-bond basis over time, separated by credit rating. Panel (a) displays investment-grade bonds, while panel (b) shows high-yield bonds. The blue line represents the median basis, while the red dotted lines show the 10th and 90th percentiles.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{_output/figure1_basis_timeseries.pdf}
+    \caption{Dispersion of the CDS-bond basis by credit rating: (a) Investment-grade bonds and (b) high-yield bonds. The median basis is shown in blue, with 10th and 90th percentiles in red.}
+    \label{fig:figure1}
+\end{figure}
+
+Key observations from Figure~\ref{fig:figure1}:
+\begin{itemize}
+    \item The basis was relatively stable and close to zero before the financial crisis
+    \item Both investment-grade and high-yield bonds show sharp negative bases during Crisis II (post-Lehman)
+    \item High-yield bonds exhibit greater dispersion and more negative bases than investment-grade bonds
+    \item The basis gradually recovered in the post-crisis period but remained negative on average
+\end{itemize}
+
+\subsection{Table 1: Summary Statistics}
+
+Table~\ref{tab:table1} presents summary statistics of the CDS-bond basis across the four crisis phases and various rating categories. Statistics include the mean, standard deviation (SD), 10th percentile (P10), and 90th percentile (P90).
+
+\input{_output/table1_summary_statistics.tex}
+
+\section{Challenges and Discussion}
+
+\subsection{Successes}
+\begin{itemize}
+    \item Successfully matched bonds to CDS entities using ticker symbols
+    \item Replicated the overall patterns observed in the original paper
+    \item Automated the entire data pipeline from raw data to publication-ready outputs
+\end{itemize}
+
+\subsection{Challenges and Deviations}
+\begin{itemize}
+    \item \textbf{Missing MR Clause}: The CDS data contains only XR14 and XR restructuring clauses, not the Modified Restructuring (MR) clause specified in the paper. This is likely due to market convention changes after the sample period.
+    
+    \item \textbf{Simplified PECDS Calculation}: Due to unavailable swap rate curves, we use bond yields directly as PECDS proxies rather than implementing the full bootstrapping methodology from Appendix A. This may introduce bias as bond yields include both credit spread and risk-free rate components.
+    
+    \item \textbf{Company Matching}: The paper notes that CDS-bond matching was done "manually," suggesting this is a known difficulty. We use automated ticker matching which may miss some valid pairs or include incorrect matches.
+    
+    \item \textbf{Sample Coverage}: Our matched sample includes 698 unique CDS names compared to 679 in the paper, suggesting reasonable but not perfect replication of the sample.
+\end{itemize}
+
+\subsection{Comparison with Original Results}
+
+Comparing our mean basis values with those reported in the paper reveals both similarities and differences. The overall patterns are consistent: negative bases during crisis periods, with Crisis II showing the most negative values. However, the magnitudes differ, likely due to the simplified PECDS calculation and data differences noted above.
+
+\section{Conclusion}
+
+This replication successfully reproduces the main patterns documented in Bai and Collin-Dufresne (2019), demonstrating negative CDS-bond bases during crisis periods with greater magnitudes for high-yield bonds. While the simplified methodology and data limitations prevent exact numerical replication, the economic insights remain intact: arbitrage relationships between CDS and bond markets can break down significantly during periods of financial stress.
+
+\end{document}

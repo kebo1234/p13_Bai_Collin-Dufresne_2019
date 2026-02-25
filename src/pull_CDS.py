@@ -11,8 +11,8 @@ from settings import config
 DATA_DIR = Path(config("DATA_DIR"))
 WRDS_USERNAME = config("WRDS_USERNAME")
 
-START_YEAR = 2006
-END_YEAR = 2026
+START_YEAR = pd.to_datetime(config('START_DATE')).year
+END_YEAR = pd.to_datetime(config('END_DATE')).year
 
 description_cds = {
     "date": "Observation date",

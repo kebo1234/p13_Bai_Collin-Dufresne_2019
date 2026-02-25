@@ -11,8 +11,8 @@ from settings import config
 DATA_DIR = Path(config("DATA_DIR"))
 WRDS_USERNAME = config("WRDS_USERNAME")
 
-START_DATE = "2006-07-01"
-END_DATE   = "2024-08-31" # Last date range in database
+START_DATE = config('START_DATE')
+END_DATE = "2024-08-31" # Last date range in database
 
 description_bonds = {
     "date": "Observation date",

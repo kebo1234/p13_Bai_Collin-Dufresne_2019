@@ -1,4 +1,8 @@
 # src/calc_basis.py
+"""
+Compute CDS-bond basis from PECDS according to Equation (1) in Section 2 of the paper:
+    - basis = cds_spread - pecds
+"""
 
 import pandas as pd
 from pathlib import Path
@@ -8,11 +12,8 @@ DATA_DIR = Path(config('DATA_DIR'))
 
 def calc_basis():
     """
-    Compute CDS-bond basis from PECDS:
-        - basis = cds_spread - pecds
-
     Input:
-        - pecds.parquet (output of calc_pecds.py)
+        - pecds.parquet
 
     Output:
         - basis.parquet

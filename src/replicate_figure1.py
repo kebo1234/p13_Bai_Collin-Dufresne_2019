@@ -102,12 +102,15 @@ def plot_html_px(df, end_date, outpath, title):
 if __name__ == '__main__':
     df = pd.read_parquet(DATA_DIR / 'basis.parquet')
 
+    # PNGs
     replication_fig = plot(df, SAMPLE_END_DATE)
     replication_fig.savefig(OUTPUT_DIR / 'replication_figure1.png', dpi=200)
     plt.close(replication_fig)
-    plot_html_px(df, SAMPLE_END_DATE, OUTPUT_DIR / 'replication_figure1.html', 'Figure 1 (Replication Window)')
 
     extension_fig = plot(df, END_DATE)
     extension_fig.savefig(OUTPUT_DIR / 'extension_figure1.png', dpi=200)
     plt.close(extension_fig)
-    plot_html_px(df, END_DATE, OUTPUT_DIR / 'extension_figure1.html', 'Figure 1 (Extended Window)')
+
+    # HTMLs (for chartbook)
+    plot_html_px(df, SAMPLE_END_DATE, OUTPUT_DIR / 'replication_figure1.html', 'Figure 1 (Replication Window)')
+    plot_html_px(df, END_DATE, OUTPUT_DIR / 'extension_figure1.html', 'Figure 1 (Extended)')

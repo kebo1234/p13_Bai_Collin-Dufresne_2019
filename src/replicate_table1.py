@@ -17,7 +17,7 @@ from pathlib import Path
 from settings import config
 
 DATA_DIR = Path(config("DATA_DIR"))
-OUTPUT_DIR = Path("_output")
+OUTPUT_DIR = Path(config("OUTPUT_DIR"))
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 
@@ -34,11 +34,14 @@ def add_crisis_phases(df):
     """Add crisis phase indicators."""
     df = df.copy()
     
+    # Ensure datetime
+    df["date"] = pd.to_datetime(df["date"])
+
     df['phase'] = 'Unknown'
     df.loc[df['date'] < '2007-07-01', 'phase'] = 'Before Crisis'
     df.loc[(df['date'] >= '2007-07-01') & (df['date'] < '2008-09-01'), 'phase'] = 'Crisis I'
     df.loc[(df['date'] >= '2008-09-01') & (df['date'] < '2009-10-01'), 'phase'] = 'Crisis II'
-    df.loc[df['date'] >= '2009-10-01', 'phase'] = 'Post-crisis'
+    df.loc[(df['date'] >= '2009-10-01') & (df['date'] < '2015-01-01'), 'phase'] = 'Post-crisis'
     df.loc[df['date'] >= '2015-01-01', 'phase'] = 'Extended'
     
     return df
@@ -99,7 +102,7 @@ def calculate_daily_statistics(df, group_col=None):
     """
     if group_col:
         # Group by date and category
-        daily_stats = df.groupby(['date', group_col])['basis_bps'].agg([
+        daily_stats = df.groupby(['date', group_col])['basis'].agg([
             ('mean', 'mean'),
             ('sd', 'std'),
             ('p10', lambda x: x.quantile(0.10)),
@@ -110,7 +113,7 @@ def calculate_daily_statistics(df, group_col=None):
         result = daily_stats.groupby(group_col)[['mean', 'sd', 'p10', 'p90']].mean()
     else:
         # Just by date (for ALL category)
-        daily_stats = df.groupby('date')['basis_bps'].agg([
+        daily_stats = df.groupby('date')['basis'].agg([
             ('mean', 'mean'),
             ('sd', 'std'),
             ('p10', lambda x: x.quantile(0.10)),
@@ -137,7 +140,7 @@ def create_table1(basis_df):
     basis_df['is_investment_grade'] = basis_df['rating_class'].str.contains('IG', na=False)
     
     # Define phases
-    phases = ['Before Crisis', 'Crisis I', 'Crisis II', 'Post-crisis']
+    phases = ['Before Crisis', 'Crisis I', 'Crisis II', 'Post-crisis', 'Extended']
     
     # Categories to analyze
     categories = {
@@ -166,7 +169,7 @@ def create_table1(basis_df):
             
             if len(phase_df) > 0:
                 # Calculate daily cross-sectional statistics
-                daily_stats = phase_df.groupby('date')['basis_bps'].agg([
+                daily_stats = phase_df.groupby('date')['basis'].agg([
                     ('mean', 'mean'),
                     ('sd', 'std'),
                     ('p10', lambda x: x.quantile(0.10)),
@@ -306,16 +309,16 @@ if __name__ == "__main__":
     table1 = create_table1(basis)
     
     # Display
-    print("\nTable 1:")
-    print(table1.to_string(index=False))
+    # print("\nTable 1:")
+    # print(table1.to_string(index=False))
     
     # Export to LaTeX
     export_to_latex(table1)
     
     # Also save as CSV
-    table1.to_csv(OUTPUT_DIR / "table1_replication.csv", index=False)
-    print(f"Saved CSV to {OUTPUT_DIR / 'table1_replication.csv'}")
+    # table1.to_csv(OUTPUT_DIR / "table1_replication.csv", index=False)
+    # print(f"Saved CSV to {OUTPUT_DIR / 'table1_replication.csv'}")
     
     # Compare with paper
-    print_comparison_with_paper(table1)
+    # print_comparison_with_paper(table1)
 

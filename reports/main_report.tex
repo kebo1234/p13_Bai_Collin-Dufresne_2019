@@ -9,7 +9,7 @@
 
 \title{Replication: The Credit Default Swap–Bond Basis \\
 \large Bai, Collin-Dufresne (2019)}
-\author{Your Name}
+\author{Nicholas Kebo \and Lucie Martin}
 \date{\today}
 
 \begin{document}
@@ -77,13 +77,20 @@ Following the paper, the sample is divided into four phases:
 
 \subsection{Figure 1: Time Series of CDS-Bond Basis}
 
-Figure~\ref{fig:figure1} shows the dispersion of the CDS-bond basis over time, separated by credit rating. Panel (a) displays investment-grade bonds, while panel (b) shows high-yield bonds. The blue line represents the median basis, while the red dotted lines show the 10th and 90th percentiles.
+Figures~\ref{fig:figure1_replication} and~\ref{fig:figure1_extension} show the dispersion of the CDS--bond basis over time, separated by credit rating. Panel (a) displays investment-grade bonds, while panel (b) shows high-yield bonds. The solid line represents the median basis, while the dashed lines show the 10th and 90th percentiles.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.9\textwidth]{_output/figure1_basis_timeseries.pdf}
-    \caption{Dispersion of the CDS-bond basis by credit rating: (a) Investment-grade bonds and (b) high-yield bonds. The median basis is shown in blue, with 10th and 90th percentiles in red.}
-    \label{fig:figure1}
+    \includegraphics[width=0.95\textwidth]{../_output/replication_figure1.png}
+    \caption{Dispersion of the CDS--bond basis by credit rating (replication window). Panel (a) shows investment-grade bonds; panel (b) shows high-yield bonds. Solid line: median. Dashed lines: 10th and 90th percentiles.}
+    \label{fig:figure1_replication}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{../_output/extension_figure1.png}
+    \caption{Dispersion of the CDS--bond basis by credit rating (extended window). Panel (a) shows investment-grade bonds; panel (b) shows high-yield bonds. Solid line: median. Dashed lines: 10th and 90th percentiles.}
+    \label{fig:figure1_extension}
 \end{figure}
 
 Key observations from Figure~\ref{fig:figure1}:
@@ -98,7 +105,7 @@ Key observations from Figure~\ref{fig:figure1}:
 
 Table~\ref{tab:table1} presents summary statistics of the CDS-bond basis across the four crisis phases and various rating categories. Statistics include the mean, standard deviation (SD), 10th percentile (P10), and 90th percentile (P90).
 
-\input{_output/table1_summary_statistics.tex}
+\input{../_output/table1_replication.tex}
 
 \section{Challenges and Discussion}
 

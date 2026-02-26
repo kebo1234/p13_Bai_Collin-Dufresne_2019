@@ -125,72 +125,107 @@ def task_config():
         "clean": [],
     }
 
-
 def task_pull():
     """Pull data from external sources"""
     yield {
-        "name": "crsp_stock",
-        "doc": "Pull CRSP stock data from WRDS",
+        "name": "bonds",
+        "doc": "Pull bond prices/yields from WRDS Bond Returns",
         "actions": [
             "ipython ./src/settings.py",
-            "ipython ./src/pull_CRSP_stock.py",
+            "ipython ./src/pull_bonds.py",
         ],
-        "targets": [DATA_DIR / "CRSP_stock.parquet"],
-        "file_dep": ["./src/settings.py", "./src/pull_CRSP_stock.py"],
+        "targets": [DATA_DIR / "bond_prices.parquet"],
+        "file_dep": ["./src/settings.py", "./src/pull_bonds.py"],
         "clean": [],
     }
     yield {
-        "name": "crsp_compustat",
-        "doc": "Pull CRSP Compustat data from WRDS",
+        "name": "ratings",
+        "doc": "Pull Mergent FISD ratings",
         "actions": [
             "ipython ./src/settings.py",
-            "ipython ./src/pull_CRSP_Compustat.py",
+            "ipython ./src/pull_LSEG_Mergent.py",
         ],
-        "targets": [DATA_DIR / "CRSP_Compustat.parquet"],
-        "file_dep": ["./src/settings.py", "./src/pull_CRSP_compustat.py"],
+        "targets": [DATA_DIR / "Mergent_FISD_ratings.parquet"],
+        "file_dep": ["./src/settings.py", "./src/pull_LSEG_Mergent.py"],
+        "clean": [],
+    }
+    yield {
+        "name": "cds",
+        "doc": "Pull Markit CDS spreads from WRDS",
+        "actions": [
+            "ipython ./src/settings.py",
+            "ipython ./src/pull_CDS.py",
+        ],
+        "targets": [DATA_DIR / "CDS.parquet"],
+        "file_dep": ["./src/settings.py", "./src/pull_CDS.py"],
         "clean": [],
     }
 
-
-def task_generate_charts():
-    """Generate simple exploratory charts for all datasets"""
-
-    file_dep = ["./src/generate_chart.py"]
-    targets = [OUTPUT_DIR / f"{name.replace('.parquet', '')}.html" for name in [
-        "Compustat.parquet",
-        "CRSP_Comp_Link_Table.parquet",
-        "CRSP_MSF_Index_Inputs.parquet",
-        "CRSP_MSIX.parquet",
-        "CRSP_stock_ciz.parquet",
-        "FF_Factors.parquet"
-    ]]
-
+def task_filter():
+    """Filter + match bonds to CDS (in-sample selection, but data stored through present day for extension)."""
     return {
-        "actions": ["python ./src/generate_chart.py"],
-        "file_dep": file_dep,
-        "targets": targets,
+        "actions": [
+            "ipython ./src/settings.py",
+            "python ./src/filter_data.py",
+        ],
+        "file_dep": [
+            "./src/settings.py",
+            "./src/filter_data.py",
+            DATA_DIR / "bond_prices.parquet",
+            DATA_DIR / "Mergent_FISD_ratings.parquet",
+            DATA_DIR / "CDS.parquet",
+        ],
+        "targets": [
+            DATA_DIR / "matched_bond_cds.parquet",
+        ],
+        "task_dep": ["pull"],
+        "clean": True,
+    }
+
+def task_calc_pecds():
+    """Compute PECDS."""
+    return {
+        "actions": ["python ./src/calc_PECDS.py"],
+        "file_dep": ["./src/calc_PECDS.py", DATA_DIR / "matched_bond_cds.parquet"],
+        "targets": [DATA_DIR / "pecds.parquet"],
+        "task_dep": ["filter"],
         "clean": True,
     }
 
 
-# def task_summary_stats():
-#     """Generate summary statistics tables"""
-#     file_dep = ["./src/example_table.py"]
-#     file_output = [
-#         "example_table.tex",
-#         "pandas_to_latex_simple_table1.tex",
-#     ]
-#     targets = [OUTPUT_DIR / file for file in file_output]
+def task_calc_basis():
+    """Compute CDS-bond basis."""
+    return {
+        "actions": ["python ./src/calc_basis.py"],
+        "file_dep": ["./src/calc_basis.py", DATA_DIR / "pecds.parquet"],
+        "targets": [DATA_DIR / "basis.parquet"],
+        "task_dep": ["calc_pecds"],
+        "clean": True,
+    }
 
-#     return {
-#         "actions": [
-#             "ipython ./src/example_table.py",
-#             "ipython ./src/pandas_to_latex_demo.py",
-#         ],
-#         "targets": targets,
-#         "file_dep": file_dep,
-#         "clean": True,
-#     }
+
+def task_outputs():
+    """Generate Figure 1 (png+html) and Table 1 (tex)."""
+    return {
+        "actions": [
+            "python ./src/replicate_figure1.py",
+            "python ./src/replicate_table1.py",
+        ],
+        "file_dep": [
+            "./src/replicate_figure1.py",
+            "./src/replicate_table1.py",
+            DATA_DIR / "basis.parquet",
+        ],
+        "targets": [
+            OUTPUT_DIR / "replication_figure1.png",
+            OUTPUT_DIR / "extension_figure1.png",
+            OUTPUT_DIR / "replication_figure1.html",
+            OUTPUT_DIR / "extension_figure1.html",
+            OUTPUT_DIR / "table1_replication.tex",
+        ],
+        "task_dep": ["calc_basis"],
+        "clean": True,
+    }
 
 
 notebook_tasks = {
@@ -240,38 +275,49 @@ def task_run_notebooks():
 def task_compile_latex_docs():
     """Compile the LaTeX documents to PDFs"""
     file_dep = [
-        "./reports/report_example.tex",
+        # "./reports/report_example.tex",
+        "./reports/main_report.tex",
         "./reports/my_article_header.sty",
-        "./reports/slides_example.tex",
-        "./reports/my_beamer_header.sty",
-        "./reports/my_common_header.sty",
-        "./reports/report_simple_example.tex",
-        "./reports/slides_simple_example.tex",
-        "./src/example_plot.py",
-        "./src/example_table.py",
+        OUTPUT_DIR / "replication_figure1.png",
+        OUTPUT_DIR / "extension_figure1.png",
+        OUTPUT_DIR / "table1_replication.tex",
+
+        # "./reports/slides_example.tex",
+        # "./reports/my_beamer_header.sty",
+        # "./reports/my_common_header.sty",
+        # "./reports/report_simple_example.tex",
+        # "./reports/slides_simple_example.tex",
+        # "./src/example_plot.py",
+        # "./src/example_table.py",
     ]
     targets = [
-        "./reports/report_example.pdf",
-        "./reports/slides_example.pdf",
-        "./reports/report_simple_example.pdf",
-        "./reports/slides_simple_example.pdf",
+        "./reports/main_report.pdf",
+
+        # "./reports/report_example.pdf",
+        # "./reports/slides_example.pdf",
+        # "./reports/report_simple_example.pdf",
+        # "./reports/slides_simple_example.pdf",
     ]
 
     return {
         "actions": [
-            # My custom LaTeX templates
-            "latexmk -xelatex -halt-on-error -cd ./reports/report_example.tex",  # Compile
-            "latexmk -xelatex -halt-on-error -c -cd ./reports/report_example.tex",  # Clean
-            "latexmk -xelatex -halt-on-error -cd ./reports/slides_example.tex",  # Compile
-            "latexmk -xelatex -halt-on-error -c -cd ./reports/slides_example.tex",  # Clean
-            # Simple templates based on small adjustments to Overleaf templates
-            "latexmk -xelatex -halt-on-error -cd ./reports/report_simple_example.tex",  # Compile
-            "latexmk -xelatex -halt-on-error -c -cd ./reports/report_simple_example.tex",  # Clean
-            "latexmk -xelatex -halt-on-error -cd ./reports/slides_simple_example.tex",  # Compile
-            "latexmk -xelatex -halt-on-error -c -cd ./reports/slides_simple_example.tex",  # Clean
+            "latexmk -xelatex -halt-on-error -cd ./reports/main_report.tex",
+            "latexmk -xelatex -halt-on-error -c -cd ./reports/main_report.tex",
+
+            # # My custom LaTeX templates
+            # "latexmk -xelatex -halt-on-error -cd ./reports/report_example.tex",  # Compile
+            # "latexmk -xelatex -halt-on-error -c -cd ./reports/report_example.tex",  # Clean
+            # "latexmk -xelatex -halt-on-error -cd ./reports/slides_example.tex",  # Compile
+            # "latexmk -xelatex -halt-on-error -c -cd ./reports/slides_example.tex",  # Clean
+            # # Simple templates based on small adjustments to Overleaf templates
+            # "latexmk -xelatex -halt-on-error -cd ./reports/report_simple_example.tex",  # Compile
+            # "latexmk -xelatex -halt-on-error -c -cd ./reports/report_simple_example.tex",  # Clean
+            # "latexmk -xelatex -halt-on-error -cd ./reports/slides_simple_example.tex",  # Compile
+            # "latexmk -xelatex -halt-on-error -c -cd ./reports/slides_simple_example.tex",  # Clean
         ],
         "targets": targets,
         "file_dep": file_dep,
+        "task_dep": ["outputs"],
         "clean": True,
     }
 
@@ -290,6 +336,8 @@ def task_build_chartbook_site():
         "./README.md",
         "./chartbook.toml",
         *notebook_scripts,
+        OUTPUT_DIR / 'replication_figure1.html',
+        OUTPUT_DIR / 'extension_figure1.html',
     ]
 
     return {

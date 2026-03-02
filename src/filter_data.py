@@ -187,11 +187,26 @@ if __name__ == "__main__":
     selected_issue_ids = bonds_sample['issue_id'].unique()
     selected_symbols = bonds_sample['company_symbol'].unique()
 
+    # # Store data for period extended to today (for extension later)
+    # bonds_full = bond_prices[bond_prices['issue_id'].isin(selected_issue_ids)].copy()
+    # bonds_full = add_ratings(bonds_full, ratings)
+    # cds_full = cds[cds['ticker'].isin(selected_symbols)].copy()
+
+
     # Store data for period extended to today (for extension later)
     bonds_full = bond_prices[bond_prices['issue_id'].isin(selected_issue_ids)].copy()
     bonds_full = add_ratings(bonds_full, ratings)
+
+    # ADD THIS: Filter CDS to 5Y and USD BEFORE matching
+    print(f"\nFiltering CDS for extension period...")
     cds_full = cds[cds['ticker'].isin(selected_symbols)].copy()
+    print(f"CDS before filtering: {len(cds_full):,}")
+
+    # Apply same filters as sample period
+    cds_full = cds_full[cds_full['currency'] == 'USD']
+    cds_full = cds_full[cds_full['tenor'] == '5Y']  # THIS IS KEY!
+    cds_full = cds_full[cds_full['cds_spread'].notna()]
+    print(f"CDS after filtering (USD, 5Y, no missing): {len(cds_full):,}")
 
     matched_full = match_bonds_to_cds(bonds_full, cds_full)
-
     matched_full.to_parquet(DATA_DIR / "matched_bond_cds.parquet")

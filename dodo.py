@@ -185,13 +185,19 @@ def task_filter():
 def task_calc_pecds():
     """Compute PECDS."""
     return {
-        "actions": ["python ./src/calc_PECDS.py"],
-        "file_dep": ["./src/calc_PECDS.py", DATA_DIR / "matched_bond_cds.parquet"],
+        "actions": [
+            "ipython ./src/settings.py",
+            "python -u ./src/calc_PECDS.py",
+        ],
+        "file_dep": [
+            "./src/settings.py",
+            "./src/calc_PECDS.py",
+            DATA_DIR / "matched_bond_cds.parquet",
+        ],
         "targets": [DATA_DIR / "pecds.parquet"],
         "task_dep": ["filter"],
         "clean": True,
     }
-
 
 def task_calc_basis():
     """Compute CDS-bond basis."""

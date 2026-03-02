@@ -19,6 +19,7 @@ DATA_DIR = Path(config('DATA_DIR'))
 def calc_basis():
     df = pd.read_parquet(DATA_DIR / 'pecds.parquet')
     df['basis'] = df['cds_spread'] - df['pecds']
+    df['basis_bps'] = df['basis'] * 10000
     df.to_parquet(DATA_DIR / 'basis.parquet', index=False)
 
 if __name__ == '__main__':

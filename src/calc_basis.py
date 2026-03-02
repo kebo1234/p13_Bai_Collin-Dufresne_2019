@@ -17,7 +17,7 @@ from settings import config
 DATA_DIR = Path(config('DATA_DIR'))
 
 def calc_basis():
-    df = pd.read_parquet(DATA_DIR / 'matched_bond_cds.parquet').copy()
+    df = pd.read_parquet(DATA_DIR / 'pecds.parquet')
     df['basis'] = df['cds_spread'] - df['pecds']
     df.to_parquet(DATA_DIR / 'basis.parquet', index=False)
 

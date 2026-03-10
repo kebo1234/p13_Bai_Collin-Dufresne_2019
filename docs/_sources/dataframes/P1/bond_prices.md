@@ -54,7 +54,7 @@ $ rating_class            <str> '0.IG'
 | Contributors                    | Nicholas Kebo & Lucie Martin           |
 | Git Repo URL                    |                         |
 | Pipeline Web Page               | <a href="file:///Users/kebo/Downloads/MS FinMath/Courses/Full Stack/p13_Bai_Collin-Dufresne_2019/docs/index.html">Pipeline Web Page      |
-| Date of Last Code Update        | 2026-03-10 14:08:47           |
+| Date of Last Code Update        | 2026-03-10 15:27:21           |
 | OS Compatibility                |  |
 | Linked Dataframes               |  [P1:bond_prices](../dataframes/P1/bond_prices.md)<br>  [P1:cds](../dataframes/P1/cds.md)<br>  [P1:ratings](../dataframes/P1/ratings.md)<br>  [P1:matched_bond_cds](../dataframes/P1/matched_bond_cds.md)<br>  [P1:pecds](../dataframes/P1/pecds.md)<br>  [P1:basis](../dataframes/P1/basis.md)<br>  |
 

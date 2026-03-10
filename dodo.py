@@ -212,15 +212,17 @@ def task_calc_basis():
 
 
 def task_outputs():
-    """Generate Figure 1 (png+html) and Table 1 (tex)."""
+    """Generate Figure 1 (png+html), Table 1 (tex), and descriptive outputs."""
     return {
         "actions": [
             "python ./src/replicate_figure1.py",
             "python ./src/replicate_table1.py",
+            "python ./src/underlying_data_summary.py",
         ],
         "file_dep": [
             "./src/replicate_figure1.py",
             "./src/replicate_table1.py",
+            "./src/underlying_data_summary.py",
             DATA_DIR / "basis.parquet",
         ],
         "targets": [
@@ -229,11 +231,13 @@ def task_outputs():
             OUTPUT_DIR / "replication_figure1.html",
             OUTPUT_DIR / "extension_figure1.html",
             OUTPUT_DIR / "table1_replication.tex",
-            OUTPUT_DIR / "table1_extension.tex",
+            OUTPUT_DIR / "sample_summary_table.tex",
+            OUTPUT_DIR / "underlying_spreads.png",
         ],
         "task_dep": ["calc_basis"],
         "clean": True,
     }
+
 
 notebook_tasks = {
     "notebook_interactive_ipynb": {

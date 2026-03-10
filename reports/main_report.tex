@@ -59,6 +59,24 @@ CDS contracts are filtered to:
     \item Sample period: July 2006 - December 2014
 \end{itemize}
 
+\subsection{Descriptive Summary of the Underlying Data}
+
+Below are some summary statistics for the underlying matched bond-CDS dataset and the key variables used in the analysis. Table~\ref{tab:sample_summary} reports summary statistics for the main spread variables, while Figure~\ref{fig:underlying_spreads} plots the average daily CDS spread and average daily bond-implied CDS spread proxy (PECDS) over time. Together, these descriptive statistics provide context for the replicated basis results by showing the typical levels, dispersion, and co-movement of the underlying spread series.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Summary statistics of the underlying matched sample. This table reports descriptive statistics for the key variables used in the analysis: the market CDS spread, the PECDS proxy constructed from bond yields, the CDS--bond basis in basis points, and bond yields. The main takeaway is that the basis is only one part of a broader spread environment, and understanding the levels and dispersion of the underlying series is helpful for interpreting the replicated results.}
+    \label{tab:sample_summary}
+    \input{../_output/sample_summary_table.tex}
+\end{table}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../_output/underlying_spreads.png}
+    \caption{Average daily CDS spreads and PECDS over time in the matched sample. This figure helps motivate the basis analysis by showing the behavior of the two underlying spread series whose difference defines the CDS--bond basis. Periods in which the two series diverge are precisely the periods that generate large positive or negative basis values.}
+    \label{fig:underlying_spreads}
+\end{figure}
+
 \subsection{Simplified PECDS Calculation}
 
 This replication uses a simplified approach where the monthly bond yield is used directly as a proxy for PECDS, rather than implementing the full survival probability bootstrapping methodology in Appendix A of the paper. This simplification is necessary due to the lack of available swap rate curve data.

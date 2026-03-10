@@ -40,15 +40,17 @@ def compute_series(df):
 
 def plot(df, end_date):
     df = df.copy()
-    df['date'] = pd.to_datetime(df['date'])
-    df = df[(df['date'] >= START_DATE) & (df['date'] <= end_date)]
     
-    # Add investment grade flag
+    # Add investment grade flag FIRST
     df['is_investment_grade'] = df['rating_class'].str.contains('IG', na=False)
-
-    # Winsorize basis at 0.5% and 99.5% level (like in paper)
+    
+    # Winsorize BEFORE filtering by date
     df['basis_bps'] = df['basis_bps'].astype(float)
     df['basis_bps'] = winsorize(df['basis_bps'], limits=[0.005, 0.005])
+    
+    # THEN filter by date
+    df['date'] = pd.to_datetime(df['date'])
+    df = df[(df['date'] >= START_DATE) & (df['date'] <= end_date)]
 
     fig, axes = plt.subplots(2, 1, sharex=True, figsize=(10, 8))
 
@@ -73,20 +75,22 @@ def plot(df, end_date):
 
 def plot_html_px(df, end_date, outpath, title):
     df = df.copy()
-    df['date'] = pd.to_datetime(df['date'])
-    df = df[(df['date'] >= START_DATE) & (df['date'] <= end_date)]
-
-    # Add investment grade flag
+    
+    # Add investment grade flag FIRST
     df['is_investment_grade'] = df['rating_class'].str.contains('IG', na=False)
-
-    # Winsorize basis at 0.5% and 99.5% level (like in paper)
+    
+    # Winsorize BEFORE filtering
     df['basis_bps'] = df['basis_bps'].astype(float)
     df['basis_bps'] = winsorize(df['basis_bps'], limits=[0.005, 0.005])
+    
+    # THEN filter by date
+    df['date'] = pd.to_datetime(df['date'])
+    df = df[(df['date'] >= START_DATE) & (df['date'] <= end_date)]
 
     pieces = []
     for panel, is_ig in [('Investment Grade', True), ('High Yield', False)]:
         sub = df[df['is_investment_grade'] == is_ig]
-        grouped = sub.groupby('date')['basis']
+        grouped = sub.groupby('date')['basis_bps']  
 
         wide = pd.DataFrame({
             'date': grouped.median().index,

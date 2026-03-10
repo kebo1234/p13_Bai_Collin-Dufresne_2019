@@ -27,12 +27,12 @@ charts.md
 ```{toctree}
 :maxdepth: 1
 :caption: Pipeline Dataframes 📊
-dataframes/P1/compustat.md
-dataframes/P1/crsp_comp_link.md
-dataframes/P1/crsp_msf.md
-dataframes/P1/crsp_msix.md
-dataframes/P1/crsp_stock_ciz.md
-dataframes/P1/ff_factors.md
+dataframes/P1/basis.md
+dataframes/P1/bond_prices.md
+dataframes/P1/cds.md
+dataframes/P1/matched_bond_cds.md
+dataframes/P1/pecds.md
+dataframes/P1/ratings.md
 ```
 
 
@@ -51,10 +51,10 @@ apidocs/index
 | Lead Pipeline Developer         | Nicholas Kebo & Lucie Martin             |
 | Contributors                    | Nicholas Kebo & Lucie Martin           |
 | Git Repo URL                    |                         |
-| Pipeline Web Page               | <a href="file:///Users/kebo/Downloads/p13_Bai_Collin-Dufresne_2019/docs/index.html">Pipeline Web Page      |
-| Date of Last Code Update        | 2026-02-02 13:35:01           |
+| Pipeline Web Page               | <a href="file:///Users/kebo/Downloads/MS FinMath/Courses/Full Stack/p13_Bai_Collin-Dufresne_2019/docs/index.html">Pipeline Web Page      |
+| Date of Last Code Update        | 2026-03-10 13:21:11           |
 | OS Compatibility                |  |
-| Linked Dataframes               |  [P1:compustat](./dataframes/P1/compustat.md)<br>  [P1:crsp_comp_link](./dataframes/P1/crsp_comp_link.md)<br>  [P1:crsp_msf](./dataframes/P1/crsp_msf.md)<br>  [P1:crsp_msix](./dataframes/P1/crsp_msix.md)<br>  [P1:crsp_stock_ciz](./dataframes/P1/crsp_stock_ciz.md)<br>  [P1:ff_factors](./dataframes/P1/ff_factors.md)<br>  |
+| Linked Dataframes               |  [P1:bond_prices](./dataframes/P1/bond_prices.md)<br>  [P1:cds](./dataframes/P1/cds.md)<br>  [P1:ratings](./dataframes/P1/ratings.md)<br>  [P1:matched_bond_cds](./dataframes/P1/matched_bond_cds.md)<br>  [P1:pecds](./dataframes/P1/pecds.md)<br>  [P1:basis](./dataframes/P1/basis.md)<br>  |
 
 
 

@@ -20,15 +20,13 @@ runs_on_grid_or_windows_or_other = "Windows/Linux/MacOS"
 git_repo_URL = ""
 README_file_path = "./README.md"
 
-# [notebooks]
 
+[notebooks]
 
-# [notebooks.01_example_notebook_interactive]
-# notebook_name = "Example Notebook Interactive"
-# notebook_description = "Example notebook for demonstrating how to construct a Chartbook notebook."
-# notebook_path = "_output/01_example_notebook_interactive.ipynb"
-
-
+[notebooks.notebook_interactive_ipynb]
+notebook_name = "Notebook Data Tour"
+notebook_description = "Brief tour of the cleaned data and the main replication steps for Figure 1 and Table 1."
+notebook_path = "_output/notebook_interactive_ipynb.html"
 
 
 [dataframes]

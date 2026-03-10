@@ -102,7 +102,8 @@ def calculate_daily_statistics(df, group_col=None):
     """
     if group_col:
         # Group by date and category
-        daily_stats = df.groupby(['date', group_col])['basis'].agg([
+        
+        daily_stats = df.groupby(['date', group_col])['basis_bps'].agg([
             ('mean', 'mean'),
             ('sd', 'std'),
             ('p10', lambda x: x.quantile(0.10)),
@@ -113,7 +114,7 @@ def calculate_daily_statistics(df, group_col=None):
         result = daily_stats.groupby(group_col)[['mean', 'sd', 'p10', 'p90']].mean()
     else:
         # Just by date (for ALL category)
-        daily_stats = df.groupby('date')['basis'].agg([
+        daily_stats = df.groupby('date')['basis_bps'].agg([
             ('mean', 'mean'),
             ('sd', 'std'),
             ('p10', lambda x: x.quantile(0.10)),
@@ -169,7 +170,7 @@ def create_table1(basis_df):
             
             if len(phase_df) > 0:
                 # Calculate daily cross-sectional statistics
-                daily_stats = phase_df.groupby('date')['basis'].agg([
+                daily_stats = phase_df.groupby('date')['basis_bps'].agg([
                     ('mean', 'mean'),
                     ('sd', 'std'),
                     ('p10', lambda x: x.quantile(0.10)),

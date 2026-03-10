@@ -78,6 +78,12 @@ def filter_bonds(bond_prices):
     # Filter 5: Remove bonds with missing company symbol
     df = df[df['company_symbol'].notna()]
     print(f"After removing missing company symbol: {len(df):,}")
+
+    # Filter 6: Remove bonds with unrealistic yields (sanity filter)
+    # Allows for slightly negative yields (premium bonds, low-rate environment)
+    # Removes data errors in WRDS (e.g., yields of billions of percent)
+    df = df[(df['yield'] > -0.05) & (df['yield'] < 1.0)]
+    print(f"After yield sanity filter (-5% to 100%): {len(df):,}")
     
     # Filter 6: Keep only rated bonds
     # df = df[df['rating_class'].notna()]
@@ -114,7 +120,7 @@ def filter_cds(cds_df):
     # 5-year tenor
     df = df[df['tenor'] == '5Y']
     print(f"After 5Y tenor filter: {len(df):,}")
-    
+
     # Sample period
     df = df[(df['date'] >= START_DATE) & (df['date'] <= END_DATE)]
     print(f"After date filter: {len(df):,}")
@@ -176,7 +182,6 @@ def match_bonds_to_cds(bonds_df, cds_df):
     
     return merged
 
-
 if __name__ == "__main__":
     bond_prices, ratings, cds = load_all_data()
 
@@ -187,24 +192,26 @@ if __name__ == "__main__":
     selected_issue_ids = bonds_sample['issue_id'].unique()
     selected_symbols = bonds_sample['company_symbol'].unique()
 
-    # # Store data for period extended to today (for extension later)
-    # bonds_full = bond_prices[bond_prices['issue_id'].isin(selected_issue_ids)].copy()
-    # bonds_full = add_ratings(bonds_full, ratings)
-    # cds_full = cds[cds['ticker'].isin(selected_symbols)].copy()
-
-
     # Store data for period extended to today (for extension later)
-    bonds_full = bond_prices[bond_prices['issue_id'].isin(selected_issue_ids)].copy()
+    # Apply yield filter to extended period data
+    bonds_full = bond_prices[
+        (bond_prices['issue_id'].isin(selected_issue_ids)) &
+        (bond_prices['yield'] > -0.05) &
+        (bond_prices['yield'] < 1.0)
+    ].copy()
+    print(f"Bonds for full period (with yield filter): {len(bonds_full):,}")
+    
+    # Add ratings AFTER filtering
     bonds_full = add_ratings(bonds_full, ratings)
 
-    # ADD THIS: Filter CDS to 5Y and USD BEFORE matching
+    # Filter CDS to 5Y and USD BEFORE matching
     print(f"\nFiltering CDS for extension period...")
     cds_full = cds[cds['ticker'].isin(selected_symbols)].copy()
     print(f"CDS before filtering: {len(cds_full):,}")
 
     # Apply same filters as sample period
     cds_full = cds_full[cds_full['currency'] == 'USD']
-    cds_full = cds_full[cds_full['tenor'] == '5Y']  # THIS IS KEY!
+    cds_full = cds_full[cds_full['tenor'] == '5Y']
     cds_full = cds_full[cds_full['cds_spread'].notna()]
     print(f"CDS after filtering (USD, 5Y, no missing): {len(cds_full):,}")
 

@@ -19,7 +19,7 @@ from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.express as px
-
+from scipy.stats.mstats import winsorize
 from settings import config
 
 
@@ -32,33 +32,66 @@ END_DATE = pd.to_datetime(config('END_DATE'))
 
 
 def compute_series(df):
-    grouped = df.groupby('date')['basis']
+    grouped = df.groupby('date')['basis_bps']
     median = grouped.median()
     p10 = grouped.quantile(0.10)
     p90 = grouped.quantile(0.90)
     return median, p10, p90
 
-
 def plot(df, end_date):
     df = df.copy()
     df['date'] = pd.to_datetime(df['date'])
     df = df[(df['date'] >= START_DATE) & (df['date'] <= end_date)]
+    
+    # Add investment grade flag
+    df['is_investment_grade'] = df['rating_class'].str.contains('IG', na=False)
 
-    fig, axes = plt.subplots(2, 1, sharex=True)
+    # Winsorize basis at 0.5% and 99.5% level (like in paper)
+    df['basis_bps'] = df['basis_bps'].astype(float)
+    df['basis_bps'] = winsorize(df['basis_bps'], limits=[0.005, 0.005])
 
-    for ax, label, subset in [(axes[0], 'Investment Grade', df[df['rating_class'] == 0]),
-                              (axes[1], 'High Yield', df[df['rating_class'] == 1]),]:
+    fig, axes = plt.subplots(2, 1, sharex=True, figsize=(10, 8))
+
+    for ax, label, subset in [
+        (axes[0], 'Investment Grade', df[df['is_investment_grade'] == True]),
+        (axes[1], 'High Yield', df[df['is_investment_grade'] == False])
+    ]:
         median, p10, p90 = compute_series(subset)
 
-        ax.plot(median.index, median.values)
-        ax.plot(p10.index, p10.values, linestyle='--')
+        ax.plot(median.index, median.values, label='Median', linewidth=2)
+        ax.plot(p10.index, p10.values, linestyle='--', label='P10/P90')
         ax.plot(p90.index, p90.values, linestyle='--')
         ax.set_title(label)
         ax.set_ylabel('Basis (bps)')
+        ax.legend()
+        ax.grid(True, alpha=0.3)
 
     axes[1].set_xlabel('Date')
     fig.tight_layout()
     return fig
+
+
+# old version, kept in case
+# def plot(df, end_date):
+#     df = df.copy()
+#     df['date'] = pd.to_datetime(df['date'])
+#     df = df[(df['date'] >= START_DATE) & (df['date'] <= end_date)]
+
+#     fig, axes = plt.subplots(2, 1, sharex=True)
+
+#     for ax, label, subset in [(axes[0], 'Investment Grade', df[df['rating_class'] == 0]),
+#                               (axes[1], 'High Yield', df[df['rating_class'] == 1]),]:
+#         median, p10, p90 = compute_series(subset)
+
+#         ax.plot(median.index, median.values)
+#         ax.plot(p10.index, p10.values, linestyle='--')
+#         ax.plot(p90.index, p90.values, linestyle='--')
+#         ax.set_title(label)
+#         ax.set_ylabel('Basis (bps)')
+
+#     axes[1].set_xlabel('Date')
+#     fig.tight_layout()
+#     return fig
 
 
 def plot_html_px(df, end_date, outpath, title):
@@ -66,10 +99,22 @@ def plot_html_px(df, end_date, outpath, title):
     df['date'] = pd.to_datetime(df['date'])
     df = df[(df['date'] >= START_DATE) & (df['date'] <= end_date)]
 
+    # Add investment grade flag
+    df['is_investment_grade'] = df['rating_class'].str.contains('IG', na=False)
+
+    # Winsorize basis at 0.5% and 99.5% level (like in paper)
+    df['basis_bps'] = df['basis_bps'].astype(float)
+    df['basis_bps'] = winsorize(df['basis_bps'], limits=[0.005, 0.005])
+
     pieces = []
-    for panel, rc in [('Investment Grade', 0), ('High Yield', 1)]:
-        sub = df[df['rating_class'] == rc]
+    for panel, is_ig in [('Investment Grade', True), ('High Yield', False)]:
+        sub = df[df['is_investment_grade'] == is_ig]
         grouped = sub.groupby('date')['basis']
+
+    # old version, kept in case
+    # for panel, rc in [('Investment Grade', 0), ('High Yield', 1)]:
+    #     sub = df[df['rating_class'] == rc]
+      
 
         wide = pd.DataFrame({
             'date': grouped.median().index,

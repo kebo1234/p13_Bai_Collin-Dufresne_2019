@@ -90,10 +90,22 @@ short_description_chart = "Median basis with 10th/90th percentiles for IG and HY
 dataframe_id = "basis"
 path_to_html_chart = "_output/replication_figure1.html"
 chart_docs_str = "Replication of Bai & Collin-Dufresne (2019) Figure 1."
+topic_tags = ["cds", "basis"]
+data_frequency = "daily"
+observation_period = "2006-07-01 to 2014-12-30"
+lag_in_data_release = "unknown"
+data_release_timing = "historical"
+units = "basis points"
 
 [charts.figure1_extension]
 chart_name = "Figure 1 (Extended): CDS–Bond Basis"
 short_description_chart = "Same as Figure 1 but extended through END_DATE."
 dataframe_id = "basis"
 path_to_html_chart = "_output/extension_figure1.html"
-chart_docs_str = "Extension of Figure 1 through present/end date."
+chart_docs_str = "Extension of Figure 1 through end date."
+topic_tags = ["cds", "basis"]
+data_frequency = "daily"
+observation_period = "2006-07-01 to 2022-03-31"
+lag_in_data_release = "unknown"
+data_release_timing = "historical"
+units = "basis points"

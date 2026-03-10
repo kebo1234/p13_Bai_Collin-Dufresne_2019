@@ -58,9 +58,9 @@ def plot(df, end_date):
     ]:
         median, p10, p90 = compute_series(subset)
 
-        ax.plot(median.index, median.values, label='Median', linewidth=2)
-        ax.plot(p10.index, p10.values, linestyle='--', label='P10/P90')
-        ax.plot(p90.index, p90.values, linestyle='--')
+        ax.plot(median.index, median.values, label='Median', linewidth=2, color='blue')
+        ax.plot(p10.index, p10.values, linestyle='--', label='P10', color='red')
+        ax.plot(p90.index, p90.values, linestyle='--', label='P90', color='red')
         ax.set_title(label)
         ax.set_ylabel('Basis (bps)')
         ax.legend()
@@ -69,29 +69,6 @@ def plot(df, end_date):
     axes[1].set_xlabel('Date')
     fig.tight_layout()
     return fig
-
-
-# old version, kept in case
-# def plot(df, end_date):
-#     df = df.copy()
-#     df['date'] = pd.to_datetime(df['date'])
-#     df = df[(df['date'] >= START_DATE) & (df['date'] <= end_date)]
-
-#     fig, axes = plt.subplots(2, 1, sharex=True)
-
-#     for ax, label, subset in [(axes[0], 'Investment Grade', df[df['rating_class'] == 0]),
-#                               (axes[1], 'High Yield', df[df['rating_class'] == 1]),]:
-#         median, p10, p90 = compute_series(subset)
-
-#         ax.plot(median.index, median.values)
-#         ax.plot(p10.index, p10.values, linestyle='--')
-#         ax.plot(p90.index, p90.values, linestyle='--')
-#         ax.set_title(label)
-#         ax.set_ylabel('Basis (bps)')
-
-#     axes[1].set_xlabel('Date')
-#     fig.tight_layout()
-#     return fig
 
 
 def plot_html_px(df, end_date, outpath, title):
@@ -110,11 +87,6 @@ def plot_html_px(df, end_date, outpath, title):
     for panel, is_ig in [('Investment Grade', True), ('High Yield', False)]:
         sub = df[df['is_investment_grade'] == is_ig]
         grouped = sub.groupby('date')['basis']
-
-    # old version, kept in case
-    # for panel, rc in [('Investment Grade', 0), ('High Yield', 1)]:
-    #     sub = df[df['rating_class'] == rc]
-      
 
         wide = pd.DataFrame({
             'date': grouped.median().index,
@@ -137,6 +109,16 @@ def plot_html_px(df, end_date, outpath, title):
         line_dash='stat',
         facet_row='panel',
         title=title,
+        color_discrete_map={
+            'median': 'blue',
+            'p10': 'red',
+            'p90': 'red'
+        },
+        line_dash_map={
+            'median': 'solid',
+            'p10': 'dash',
+            'p90': 'dash'
+        }
     )
 
     fig.update_yaxes(title_text='Basis (bps)')

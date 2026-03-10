@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# environment
+.env
+
+# doit
+.doit-db.sqlite
+
+# project outputs
+_data/
+_output/

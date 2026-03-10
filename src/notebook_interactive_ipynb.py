@@ -13,12 +13,28 @@
 # ---
 
 # %% [markdown]
-# # 01. Data Tour: Bai, Collin-Dufresne (2019) Replication
+# # Bai, Collin-Dufresne (2019) Replication
 #
-# This notebook gives a brief tour of the cleaned data and the main analysis steps
-# used in the replication of Figure 1 and Table 1.
+# ## Summary
+#
+# Bai and Collin-Dufresne (2019) study the CDS-bond basis, defined as the difference
+# between the market CDS spread and the bond-implied CDS spread. Their results show
+# that the basis became sharply negative and more volatile during the global financial crisis,
+# especially for high-yield bonds. In this project, we replicate their Figure 1 and Table 1
+# using WRDS bond return data, Markit CDS data, and Mergent FISD ratings.
+#
+#
+# This notebook gives a guided tour of the cleaned datasets and the main analysis steps
+# used in the pipeline. The underlying scripts (not including pull scripts) are:
+#
+# - `filter_data.py`: filters the bond and CDS universe and builds the matched panel
+# - `calc_PECDS.py`: constructs the PECDS proxy
+# - `calc_basis.py`: computes the CDS-bond basis and converts it to basis points
+# - `replicate_figure1.py`: generates the figure outputs
+# - `replicate_table1.py`: generates the summary table output
 
 # %%
+
 from pathlib import Path
 import pandas as pd
 import plotly.express as px
@@ -133,7 +149,7 @@ fig
 # paper-style outputs used in the report:
 #
 # - Figure 1: basis dispersion over paper sample for IG and HY bonds, using `basis_bps`
-# - Figure 2: Fig. 1 with extended time period
+# - Figure 1: extended window
 # - Table: summary statistics across rating categories for paper crisis phases + extension, using `basis_bps`
 
 # %%

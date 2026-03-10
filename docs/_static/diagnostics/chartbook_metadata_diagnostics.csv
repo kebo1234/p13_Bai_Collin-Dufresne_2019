@@ -6,5 +6,5 @@ ratings,False,dataframe,ratings,P1,"dataframe_name, short_description_df, links_
 matched_bond_cds,False,dataframe,matched_bond_cds,P1,"dataframe_name, short_description_df, links_to_data_providers, topic_tags",../dataframes/P1/matched_bond_cds.html
 pecds,False,dataframe,pecds,P1,"dataframe_name, short_description_df, links_to_data_providers, topic_tags",../dataframes/P1/pecds.html
 basis,False,dataframe,basis,P1,"dataframe_name, short_description_df, links_to_data_providers, topic_tags",../dataframes/P1/basis.html
-Figure 1 (Replication Window): CDS–Bond Basis,False,chart,figure1_replication,P1,"topic_tags, data_frequency, observation_period, lag_in_data_release, data_release_timing, units",../charts/P1.figure1_replication.html
-Figure 1 (Extended): CDS–Bond Basis,False,chart,figure1_extension,P1,"topic_tags, data_frequency, observation_period, lag_in_data_release, data_release_timing, units",../charts/P1.figure1_extension.html
+Figure 1 (Replication Window): CDS–Bond Basis,True,chart,figure1_replication,P1,,../charts/P1.figure1_replication.html
+Figure 1 (Extended): CDS–Bond Basis,True,chart,figure1_extension,P1,,../charts/P1.figure1_extension.html

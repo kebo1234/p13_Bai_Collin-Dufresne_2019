@@ -229,6 +229,7 @@ def task_outputs():
             OUTPUT_DIR / "replication_figure1.html",
             OUTPUT_DIR / "extension_figure1.html",
             OUTPUT_DIR / "table1_replication.tex",
+            OUTPUT_DIR / "table1_extension.tex",
         ],
         "task_dep": ["calc_basis"],
         "clean": True,
@@ -288,6 +289,7 @@ def task_compile_latex_docs():
         OUTPUT_DIR / "replication_figure1.png",
         OUTPUT_DIR / "extension_figure1.png",
         OUTPUT_DIR / "table1_replication.tex",
+        OUTPUT_DIR / "table1_extension.tex",
     ]
     targets = [
         "./reports/main_report.pdf",

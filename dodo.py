@@ -236,8 +236,8 @@ def task_outputs():
 
 
 notebook_tasks = {
-    "01_example_notebook_interactive_ipynb": {
-        "path": "./src/01_example_notebook_interactive_ipynb.py",
+    "notebook_interactive_ipynb": {
+        "path": "./src/notebook_interactive_ipynb.py",
         "file_dep": [],
         "targets": [],
     },

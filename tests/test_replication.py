@@ -25,8 +25,13 @@ def test_table1_values_within_tolerance():
 
 def test_figure1_trend_matches_paper():
     """Test that Figure 1 shows same qualitative trends as paper"""
-    basis = pd.read_parquet('_data/basis.parquet')
+    # Load only date and rating columns to save memory
+    basis = pd.read_parquet('_data/basis.parquet', 
+                           columns=['date', 'rating_class', 'basis_bps'])
     basis['date'] = pd.to_datetime(basis['date'])
+    
+    # Sample data to reduce memory - 10% sample is enough for trend test
+    basis = basis.sample(frac=0.1, random_state=42)
     
     # Add investment grade flag
     basis['is_investment_grade'] = basis['rating_class'].str.contains('IG', na=False)

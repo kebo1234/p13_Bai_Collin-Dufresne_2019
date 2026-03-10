@@ -263,36 +263,6 @@ def export_to_latex(table1, filename="table1_replication.tex"):
     with open(output_path, 'w') as f:
         f.write(latex_str)
     
-    print(f"Saved LaTeX table to {output_path}")
-
-
-def print_comparison_with_paper(table1):
-    """Compare our results with the paper's published Table 1."""
-    print("\n" + "="*80)
-    print("COMPARISON WITH PAPER")
-    print("="*80)
-    
-    # Paper's results
-    paper = {
-        'ALL': {'Before Crisis': (-10, 59, -57, 45), 'Crisis I': (-118, 192, -273, 14), 
-                'Crisis II': (-324, 369, -667, -55), 'Post-crisis': (-137, 152, -268, -32)},
-        'IG': {'Before Crisis': (-17, 30, -51, 17), 'Crisis I': (-83, 108, -150, -10),
-               'Crisis II': (-243, 256, -451, -48), 'Post-crisis': (-101, 71, -173, -32)},
-        'HY': {'Before Crisis': (12, 104, -107, 142), 'Crisis I': (-180, 265, -486, 57),
-               'Crisis II': (-560, 504, -1248, -114), 'Post-crisis': (-237, 242, -477, -35)},
-    }
-    
-    for cat in ['ALL', 'IG', 'HY']:
-        print(f"\n{cat}:")
-        for phase in ['Before Crisis', 'Crisis I', 'Crisis II', 'Post-crisis']:
-            our_mean = table1[table1['Category'] == cat][f'{phase}_Mean'].values[0]
-            paper_vals = paper[cat][phase]
-            
-            diff = our_mean - paper_vals[0] if pd.notna(our_mean) else None
-            
-            print(f"  {phase:15s}: Our Mean={our_mean:6.0f}  " +
-                  f"Paper Mean={paper_vals[0]:6d}  Diff={diff:6.0f}" if diff else "  Missing")
-
 
 if __name__ == "__main__":
     print("="*80)
@@ -317,9 +287,8 @@ if __name__ == "__main__":
     export_to_latex(table1)
     
     # Also save as CSV
-    # table1.to_csv(OUTPUT_DIR / "table1_replication.csv", index=False)
-    # print(f"Saved CSV to {OUTPUT_DIR / 'table1_replication.csv'}")
+    table1.to_csv(OUTPUT_DIR / "table1_replication.csv", index=False)
+    print(f"Saved CSV to {OUTPUT_DIR / 'table1_replication.csv'}")
     
-    # Compare with paper
-    # print_comparison_with_paper(table1)
+
 

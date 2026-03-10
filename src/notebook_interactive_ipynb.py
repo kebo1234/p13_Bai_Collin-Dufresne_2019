@@ -23,8 +23,10 @@ from pathlib import Path
 import pandas as pd
 import plotly.express as px
 from settings import config
+from IPython.display import Image, display
 
 DATA_DIR = Path(config("DATA_DIR"))
+OUTPUT_DIR = Path(config("OUTPUT_DIR"))
 
 # %%
 matched = pd.read_parquet(DATA_DIR / "matched_bond_cds.parquet")
@@ -130,5 +132,13 @@ fig
 # The scripts `replicate_figure1.py` and `replicate_table1.py` generate the final
 # paper-style outputs used in the report:
 #
-# - Figure 1: basis dispersion over time for IG and HY bonds, using `basis_bps`
-# - Table 1: summary statistics across crisis phases and rating categories, using `basis_bps`
+# - Figure 1: basis dispersion over paper sample for IG and HY bonds, using `basis_bps`
+# - Figure 2: Fig. 1 with extended time period
+# - Table: summary statistics across rating categories for paper crisis phases + extension, using `basis_bps`
+
+# %%
+display(Image(filename=OUTPUT_DIR / "replication_figure1.png"))
+display(Image(filename=OUTPUT_DIR / "extension_figure1.png"))
+
+table1 = pd.read_csv(OUTPUT_DIR / "table1_replication.csv")
+table1

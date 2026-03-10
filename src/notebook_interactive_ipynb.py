@@ -114,16 +114,15 @@ fig
 # ## 6. IG vs HY comparison
 
 # %%
-if "rating_class" in basis.columns:
-    ig_hy = basis.groupby(["date", "rating_class"], as_index=False)["basis_bps"].median()
-    fig = px.line(
-        ig_hy,
-        x="date",
-        y="basis_bps",
-        color="rating_class",
-        title="Median CDS-Bond Basis (bps) by Rating Class"
-    )
-    fig
+ig_hy = basis.groupby(["date", "rating_class"], as_index=False)["basis_bps"].median()
+fig = px.line(
+    ig_hy,
+    x="date",
+    y="basis_bps",
+    color="rating_class",
+    title="Median CDS-Bond Basis (bps) by Rating Class"
+)
+fig
 
 # %% [markdown]
 # ## 7. Final outputs

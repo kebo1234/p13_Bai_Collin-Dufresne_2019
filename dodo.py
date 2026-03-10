@@ -65,6 +65,7 @@ BASE_DIR = config("BASE_DIR")
 DATA_DIR = config("DATA_DIR")
 MANUAL_DATA_DIR = config("MANUAL_DATA_DIR")
 OUTPUT_DIR = config("OUTPUT_DIR")
+REPORTS_DIR = BASE_DIR / "reports"
 OS_TYPE = config("OS_TYPE")
 USER = config("USER")
 
@@ -255,10 +256,10 @@ def task_run_notebooks():
             "name": notebook,
             "actions": [
                 """python -c "import sys; from datetime import datetime; print(f'Start """ + notebook + """: {datetime.now()}', file=sys.stderr)" """,
-                f"jupytext --to notebook --output {notebook_path} {pyfile_path}",
+                f'jupytext --to notebook --output "{notebook_path}" "{pyfile_path}"',
                 jupyter_execute_notebook(notebook_path),
-                jupyter_to_html(notebook_path),
-                mv(notebook_path, OUTPUT_DIR),
+                jupyter_to_html(notebook_path, OUTPUT_DIR),
+                mv(notebook_path, REPORTS_DIR),
                 """python -c "import sys; from datetime import datetime; print(f'End """ + notebook + """: {datetime.now()}', file=sys.stderr)" """,
             ],
             "file_dep": [
@@ -267,6 +268,7 @@ def task_run_notebooks():
             ],
             "targets": [
                 OUTPUT_DIR / f"{notebook}.html",
+                REPORTS_DIR / f"{notebook}.ipynb",
                 *notebook_tasks[notebook]["targets"],
             ],
             "clean": True,

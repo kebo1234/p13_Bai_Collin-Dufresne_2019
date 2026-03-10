@@ -74,15 +74,15 @@ environ["PYDEVD_DISABLE_FILE_VALIDATION"] = "1"
 # fmt: off
 ## Helper functions for automatic execution of Jupyter notebooks
 def jupyter_execute_notebook(notebook_path):
-    return f"jupyter nbconvert --execute --to notebook --ClearMetadataPreprocessor.enabled=True --inplace {notebook_path}"
+    return f'jupyter nbconvert --execute --to notebook --ClearMetadataPreprocessor.enabled=True --inplace "{notebook_path}"'
 def jupyter_to_html(notebook_path, output_dir=OUTPUT_DIR):
-    return f"jupyter nbconvert --to html --output-dir={output_dir} {notebook_path}"
+    return f'jupyter nbconvert --to html --output-dir="{output_dir}" "{notebook_path}"'
 def jupyter_to_md(notebook_path, output_dir=OUTPUT_DIR):
     """Requires jupytext"""
-    return f"jupytext --to markdown --output-dir={output_dir} {notebook_path}"
+    return f'jupytext --to markdown --output-dir="{output_dir}" "{notebook_path}"'
 def jupyter_clear_output(notebook_path):
     """Clear the output of a notebook"""
-    return f"jupyter nbconvert --ClearOutputPreprocessor.enabled=True --ClearMetadataPreprocessor.enabled=True --inplace {notebook_path}"
+    return f'jupyter nbconvert --ClearOutputPreprocessor.enabled=True --ClearMetadataPreprocessor.enabled=True --inplace "{notebook_path}"'
 # fmt: on
 
 
@@ -92,9 +92,9 @@ def mv(from_path, to_path):
     to_path = Path(to_path)
     to_path.mkdir(parents=True, exist_ok=True)
     if OS_TYPE == "nix":
-        command = f"mv {from_path} {to_path}"
+        command = f'mv "{from_path}" "{to_path}"'
     else:
-        command = f"move {from_path} {to_path}"
+        command = f'move "{from_path}" "{to_path}"'
     return command
 
 
@@ -287,39 +287,15 @@ def task_compile_latex_docs():
         OUTPUT_DIR / "replication_figure1.png",
         OUTPUT_DIR / "extension_figure1.png",
         OUTPUT_DIR / "table1_replication.tex",
-
-        # "./reports/slides_example.tex",
-        # "./reports/my_beamer_header.sty",
-        # "./reports/my_common_header.sty",
-        # "./reports/report_simple_example.tex",
-        # "./reports/slides_simple_example.tex",
-        # "./src/example_plot.py",
-        # "./src/example_table.py",
     ]
     targets = [
         "./reports/main_report.pdf",
-
-        # "./reports/report_example.pdf",
-        # "./reports/slides_example.pdf",
-        # "./reports/report_simple_example.pdf",
-        # "./reports/slides_simple_example.pdf",
     ]
 
     return {
         "actions": [
             "latexmk -xelatex -halt-on-error -cd ./reports/main_report.tex",
             "latexmk -xelatex -halt-on-error -c -cd ./reports/main_report.tex",
-
-            # # My custom LaTeX templates
-            # "latexmk -xelatex -halt-on-error -cd ./reports/report_example.tex",  # Compile
-            # "latexmk -xelatex -halt-on-error -c -cd ./reports/report_example.tex",  # Clean
-            # "latexmk -xelatex -halt-on-error -cd ./reports/slides_example.tex",  # Compile
-            # "latexmk -xelatex -halt-on-error -c -cd ./reports/slides_example.tex",  # Clean
-            # # Simple templates based on small adjustments to Overleaf templates
-            # "latexmk -xelatex -halt-on-error -cd ./reports/report_simple_example.tex",  # Compile
-            # "latexmk -xelatex -halt-on-error -c -cd ./reports/report_simple_example.tex",  # Clean
-            # "latexmk -xelatex -halt-on-error -cd ./reports/slides_simple_example.tex",  # Compile
-            # "latexmk -xelatex -halt-on-error -c -cd ./reports/slides_simple_example.tex",  # Clean
         ],
         "targets": targets,
         "file_dep": file_dep,
@@ -354,6 +330,7 @@ def task_build_chartbook_site():
         "file_dep": file_dep,
         "task_dep": [
             "run_notebooks",
+            "outputs",
         ],
         "clean": True,
     }

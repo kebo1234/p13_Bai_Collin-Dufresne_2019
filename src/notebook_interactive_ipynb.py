@@ -146,15 +146,42 @@ fig
 # ## 7. Final outputs
 #
 # The scripts `replicate_figure1.py` and `replicate_table1.py` generate the final
-# paper-style outputs used in the report:
+# paper-style outputs used in the report.
+
+# %% [markdown]
+# ### Figure 1: Replication Period (July 2006 - December 2014)
 #
-# - Figure 1: basis dispersion over paper sample for IG and HY bonds, using `basis_bps`
-# - Figure 1: extended window
-# - Table: summary statistics across rating categories for paper crisis phases + extension, using `basis_bps`
+# This figure replicates Figure 1 from the original paper, showing the median CDS-bond
+# basis and 10th/90th percentiles for investment-grade and high-yield bonds during the
+# paper's sample period.
 
 # %%
 display(Image(filename=OUTPUT_DIR / "replication_figure1.png"))
+
+# %% [markdown]
+# ### Figure 1: Extension Period (January 2015 - Present)
+#
+# This figure extends the analysis beyond the paper's sample period to show how the
+# CDS-bond basis has evolved in recent years.
+
+# %%
 display(Image(filename=OUTPUT_DIR / "extension_figure1.png"))
 
-table1 = pd.read_csv(OUTPUT_DIR / "table1_replication.csv")
-table1
+# %% [markdown]
+# ### Table 1: Replication Period
+#
+# Summary statistics for the CDS-bond basis across rating categories and crisis phases,
+# matching the paper's methodology. All values in basis points.
+
+# %%
+table1_replication = pd.read_csv(OUTPUT_DIR / "table1_replication.csv")
+table1_replication
+
+# %% [markdown]
+# ### Table 1: Extension Period
+#
+# Summary statistics for the extended period (January 2015 - Present).
+
+# %%
+table1_extension = pd.read_csv(OUTPUT_DIR / "table1_extension.csv")
+table1_extension

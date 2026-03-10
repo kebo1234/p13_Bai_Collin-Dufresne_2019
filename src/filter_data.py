@@ -178,6 +178,9 @@ def match_bonds_to_cds(bonds_df, cds_df):
     # Merge: CDS daily w/ bond monthly via ticker + year_month
     merged = cds_df.merge(bonds_df, left_on=['ticker', 'year_month'], right_on=['company_symbol', 'year_month'], how='inner')
     
+    # Convert year_month to string before saving (Polars doesn't support Period dtype)
+    merged['year_month'] = merged['year_month'].astype(str)  
+    
     print(f"Matched observations: {len(merged):,}")
     
     return merged

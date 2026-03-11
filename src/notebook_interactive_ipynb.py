@@ -161,7 +161,7 @@ fig
 display(Image(filename=OUTPUT_DIR / "replication_figure1.png"))
 
 # %% [markdown]
-# ### Figure 1: Extension Period (January 2015 - Present)
+# ### Figure 1: Extension Period (January 2015 - March 2022)
 #
 # This figure extends the analysis beyond the paper's sample period to show how the
 # CDS-bond basis has evolved in recent years.

@@ -6,6 +6,10 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{hyperref}
+\usepackage{float}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
 
 \title{Replication: The Credit Default Swap–Bond Basis \\
 \large Bai, Collin-Dufresne (2019)}
@@ -54,14 +58,12 @@ However, during the 2007-2009 financial crisis, the basis became persistently an
 The replication uses the following data sources:
 
 \begin{itemize}
-    \item \textbf{CDS Data}: Markit CDS spreads from WRDS, including 5-year USD-denominated contracts
+    \item \textbf{CDS Data}: Markit CDS spreads from WRDS (specifically, we use par spreads to match the paper)
     \item \textbf{Bond Data}: WRDS Bond Returns database with monthly bond prices and yields
     \item \textbf{Bond Characteristics}: Mergent FISD (Fixed Income Securities Database) for bond issue details
     \item \textbf{Credit Ratings}: Mergent FISD ratings from S\&P and Moody's
     \item \textbf{Treasury Data}: Monthly Treasury yields from WRDS used in PECDS approximation
 \end{itemize}
-
-\textbf{Paper Sample Period}: July 1, 2006 to December 30, 2014
 
 \section{Methodology}
 
@@ -102,14 +104,14 @@ Table~\ref{tab:sample_summary} reports summary statistics for the main spread va
 the average daily CDS spread and average daily bond-implied CDS spread proxy (PECDS) over time. Together, these descriptive statistics provide
 context for the replicated basis results by showing the typical correlation of the underlying spread series.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{../_output/underlying_spreads.png}
     \caption{Average daily CDS spreads and PECDS over time in the sample. This figure helps motivate the basis analysis by showing the behavior of the two underlying spread series whose difference defines the CDS--bond basis. Periods where the two series diverge are the periods that generate large (absolute) basis values.}
     \label{fig:underlying_spreads}
 \end{figure}
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Summary statistics of the underlying data. This table reports descriptive statistics for the key variables used in the analysis: the market CDS spread, the PECDS proxy constructed from bond and Treasury yields, the CDS--bond basis in basis points, and bond yields. The main takeaway here is to provide helpful intuition for interpreting the replicated results.}
     \label{tab:sample_summary}
@@ -121,7 +123,7 @@ context for the replicated basis results by showing the typical correlation of t
 In the original paper, the bond-implied CDS spread (PECDS) is computed using bond prices together with the risk-free swap curve 
 to bootstrap survival probabilities and construct a synthetic CDS spread implied by bond prices (they describe their methodology in Appendix A).
 
-Implementing the methods used by Bai and Collin-Dufresne requires daily bond prices, a full swap rate term structure, and a detailed survival probability calibration.
+Implementing the methods used by Bai and Collin-Dufresne (2019) requires daily bond prices, a full swap rate term structure, and a detailed survival probability calibration.
 For our replication, those inputs are not available in the WRDS Bond Returns database, which provides only monthly bond prices and yields. Accordingly, we construct a
 simplified proxy for PECDS using bond yield spreads relative to Treasury securities. Specifically, for each bond observation we match the bond to a Treasury security with
 a similar maturity and compute
@@ -144,22 +146,22 @@ they should theoretically correspond to the credit spread "component" of the bon
 
 \section{Results}
 
-\subsection{Figure 1: Time Series of CDS-Bond Basis}
+\subsection{Figure 1 Replication}
 
 Figures~\ref{fig:figure1_replication} and~\ref{fig:figure1_extension} show the dispersion of the CDS--bond basis over time, separated by credit rating
 (i.e., investment-grade vs. high-yield bonds). The solid line represents the median basis, while the dashed lines show the 10th and 90th percentiles.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{../_output/replication_figure1.png}
     \caption{Dispersion of the CDS--bond basis by credit rating (replication window). Top panel shows investment-grade bonds; bottom panel shows high-yield bonds. Solid line: median. Dashed lines: 10th and 90th percentiles.}
     \label{fig:figure1_replication}
 \end{figure}
 
-Our results, are slightly off from the papers in terms of spread levels, but the general shape is roughly the same. Intuitively, our basis levels are not the same as the paper's because we do not calculate PECDS the same (i.e., as rigorously) as Bai and Collin-Dufresne.
+Our results are slightly off from the papers in terms of spread levels, but the general shape is roughly the same. Intuitively, our basis levels are not the same as the paper's because we do not calculate PECDS the same (i.e., as rigorously) as Bai and Collin-Dufresne (2019).
 That said, we see the same trend that during the global financial crisis, the basis becomes highly volatile, trending downward (i.e., becoming more negative) for both investment-grade and high-yield bonds.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{../_output/extension_figure1.png}
     \caption{Dispersion of the CDS--bond basis by credit rating (extended window). Top panel shows investment-grade bonds; bottom panel shows high-yield bonds. Solid line: median. Dashed lines: 10th and 90th percentiles.}
@@ -167,9 +169,9 @@ That said, we see the same trend that during the global financial crisis, the ba
 \end{figure}
 
 In Figure~\ref{fig:figure1_extension} we see a similar pattern emerge: the basis becomes more negative in 2020 around the COVID-19 pandemic, a time of significant financial instability. This suggests that in addition to our replication,
-our extension captures the general idea that Bai and Collin-Dufresne are exploring in their paper (as financial instability worsens, the arbitrage relationship that should exist between CDS spreads and PECDS goes away).
+our extension captures the general idea that Bai and Collin-Dufresne (2019) are exploring in their paper (as financial instability worsens, the arbitrage relationship that should exist between CDS spreads and PECDS goes away).
 
-\subsection{Table 1: Summary Statistics}
+\subsection{Table 1 Replication}
 
 Table~\ref{tab:table1_replication} presents summary statistics of the CDS-bond basis for the replication period (July 2006 - December 2014), matching the paper's sample. Table~\ref{tab:table1_extension} shows results for the extended period (January 2015 - March 2022).
 Statistics include the mean, standard deviation (SD), 10th percentile (P10), and 90th percentile (P90).

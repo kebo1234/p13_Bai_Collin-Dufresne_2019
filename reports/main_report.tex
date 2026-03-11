@@ -25,6 +25,29 @@ The CDS-bond basis is defined as the difference between the market CDS spread an
     \text{Basis} = \text{CDS Spread} - \text{PECDS}
 \end{equation}
 
+\section{Background and Economic Context}
+
+\subsection{The CDS-Bond Basis Arbitrage}
+
+\subsubsection{The Theoretical Arbitrage}
+In a frictionless market, the CDS spread and bond-implied credit spread should be equal. When the basis is negative (CDS $<$ PECDS), an arbitrageur could theoretically:
+\begin{enumerate}
+    \item Purchase the corporate bond
+    \item Finance the purchase via the repo market
+    \item Buy CDS protection on the bond
+    \item Lock in a risk-free profit equal to the basis
+\end{enumerate}
+This arbitrage should eliminate any persistent negative basis.
+
+\subsubsection{Why the Arbitrage Failed: Limits to Arbitrage}
+However, during the 2007-2009 financial crisis, the basis became persistently and severely negative, suggesting the arbitrage was not risk-free. The paper investigates four key frictions:
+\begin{itemize}
+    \item \textbf{Collateral Quality}: Bonds with lower credit ratings face higher haircuts in repo markets, requiring more risk capital
+    \item \textbf{Liquidity Risk}: Illiquid bonds have higher transaction costs and risk of fire-sale losses
+    \item \textbf{Counterparty Risk}: CDS protection is worthless if the protection seller defaults alongside the reference entity
+    \item \textbf{Funding Liquidity Risk}: Arbitrageurs face mark-to-market losses when the basis widens as funding costs spike
+\end{itemize}
+
 \section{Data Sources}
 
 The replication uses the following data sources:
@@ -142,6 +165,10 @@ Table~\ref{tab:table1_replication} presents summary statistics of the CDS-bond b
     
     \item \textbf{Simplified PECDS Calculation}: Due to unavailable swap rate curves, we use bond yields directly as PECDS proxies rather than implementing the full bootstrapping methodology from Appendix A. This may introduce bias as bond yields include both credit spread and risk-free rate components.
     
+    \item \textbf{Memory and Performance Issues}: Initial attempts to match bonds with CDS data created a 92-million row dataset from the entire 50-million row CDS universe, causing memory crashes. We resolved this by filtering CDS contracts to 5-year tenor and USD currency before matching rather than after, reducing the matched dataset to approximately 17 million rows.
+    
+    \item \textbf{Time-to-Maturity in Extended Period}: In the extension period (2015-present), bonds naturally age out of the 3-7.5 year maturity window specified in the paper's methodology. It is unclear whether the extension analysis should use a resampled bond universe for each period or maintain the same bond universe as bonds age, potentially resulting in some bonds with very low time-to-maturity in later years.
+    
     \item \textbf{Company Matching}: The paper notes that CDS-bond matching was done "manually," suggesting this is a known difficulty. We use automated ticker matching which may miss some valid pairs or include incorrect matches.
     
     \item \textbf{Sample Coverage}: Our matched sample includes 698 unique CDS names compared to 679 in the paper, suggesting reasonable but not perfect replication of the sample.
@@ -150,6 +177,8 @@ Table~\ref{tab:table1_replication} presents summary statistics of the CDS-bond b
 \subsection{Comparison with Original Results}
 
 Comparing our mean basis values with those reported in the paper reveals both similarities and differences. The overall patterns are consistent: negative bases during crisis periods, with Crisis II showing the most negative values. However, the magnitudes differ, likely due to the simplified PECDS calculation and data differences noted above.
+
+A notable feature in the extended period is the sharp drop in the investment-grade basis visible in Figure~\ref{fig:figure1_extension}, particularly around 2020-2022. This likely reflects the COVID-19 pandemic's impact on credit markets, where unprecedented liquidity interventions and market dislocations may have temporarily widened the basis. Alternatively, it could result from bonds aging out of the 3-7.5 year maturity window in the extended sample, changing the composition of the investment-grade universe over time.
 
 \section{Conclusion}
 

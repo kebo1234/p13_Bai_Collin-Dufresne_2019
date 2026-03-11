@@ -87,9 +87,11 @@ if "issue_id" in matched.columns:
 # %% [markdown]
 # ## 3. Construction of PECDS
 #
-# In this simplified replication, PECDS is proxied by the bond yield:
+# In this simplified replication, PECDS is proxied by bond yield - Treasury yield (procy for risk-free rate):
 #
-# `pecds = yield`
+# `pecds = Bond yield - Treasury yield`,
+#
+# where Treasury yields are mapped to bond yields based on duration -> TTM.
 
 # %%
 pecds[["date", "yield", "pecds"]].head()

@@ -6,33 +6,38 @@ Bond-implied CDS spread proxy (PECDS).
 ## DataFrame Glimpse
 
 ```
-Rows: 16727368
-Columns: 25
-$ date           <datetime[ns]> 2006-07-03 00:00:00
-$ ticker                  <str> 'T'
-$ redcode                 <str> '001AEC'
-$ tenor                   <str> '5Y'
-$ currency                <str> 'USD'
-$ docclause               <str> 'XR14'
-$ cds_spread              <f64> 0.00234669375
-$ year_month              <str> '2006-07'
-$ bond_date      <datetime[ns]> 2006-07-31 00:00:00
-$ issue_id                <f64> 21454.0
-$ cusip                   <str> '879240AN9'
-$ company_symbol          <str> 'T'
-$ bond_type               <str> 'CDEB'
-$ conv                    <f64> 0.0
-$ coupon                  <f64> 9.8
-$ maturity       <datetime[ns]> 2012-02-01 00:00:00
-$ tmt                     <f64> 5.586111111111111
-$ price_eom               <f64> 116.589
-$ yield                   <f64> 0.06204082935158779
-$ rating_class            <str> '0.IG'
-$ sp_rating               <str> 'NR'
-$ sp_ig                   <str> null
-$ moodys_rating           <str> 'NR'
-$ moodys_ig               <str> null
-$ pecds                   <f64> 0.06204082935158779
+Rows: 770841
+Columns: 30
+$ date                      <datetime[ns]> 2022-03-31 00:00:00
+$ ticker                             <str> 'NSC'
+$ redcode                            <str> '6BADC8'
+$ tenor                              <str> '5Y'
+$ currency                           <str> 'USD'
+$ docclause                          <str> 'XR14'
+$ cds_spread                         <f64> 0.00277103
+$ year_month                         <str> '2022-03'
+$ bond_date                 <datetime[ns]> 2022-03-31 00:00:00
+$ issue_id                           <f64> 572541.0
+$ cusip                              <str> '655844BJ6'
+$ company_symbol                     <str> 'NSC'
+$ bond_type                          <str> 'CDEB'
+$ conv                               <f64> 0.0
+$ coupon                             <f64> 3.0
+$ maturity                  <datetime[ns]> 2022-04-01 00:00:00
+$ tmt                                <f64> 0.002777777777777778
+$ price_eom                          <f64> 100.003
+$ yield                              <f64> 0.03383129252989459
+$ rating_class                       <str> '0.IG'
+$ sp_rating                          <str> 'NR'
+$ sp_ig                              <str> null
+$ moodys_rating                      <str> 'NR'
+$ moodys_ig                          <str> null
+$ matched_treasury_no                <f64> 207809.0
+$ matched_treasury_id                <str> '20220405.400000'
+$ matched_treasury_yield             <f64> 3.472252363386e-06
+$ matched_treasury_duration          <f64> 5.0
+$ match_dist                         <f64> 4.997222222222222
+$ pecds                              <f64> 0.03382782027753121
 
 
 ```
@@ -48,8 +53,8 @@ $ pecds                   <f64> 0.06204082935158779
 | Topic Tags                     |                                           |
 | Type of Data Access            |                                   |
 | How is data pulled?            | Built by src/calc_PECDS.py                                                    |
-| Data available up to (min)     | N/A (large file)                                                             |
-| Data available up to (max)     | N/A (large file)                                                             |
+| Data available up to (min)     | 2021-09-30 00:00:00                                                             |
+| Data available up to (max)     | 2022-03-31 00:00:00                                                             |
 | Dataframe Path                 | /Users/kebo/Downloads/MS FinMath/Courses/Full Stack/p13_Bai_Collin-Dufresne_2019/_data/pecds.parquet                                                   |
 
 
@@ -67,7 +72,7 @@ $ pecds                   <f64> 0.06204082935158779
 | Contributors                    | Nicholas Kebo & Lucie Martin           |
 | Git Repo URL                    |                         |
 | Pipeline Web Page               | <a href="file:///Users/kebo/Downloads/MS FinMath/Courses/Full Stack/p13_Bai_Collin-Dufresne_2019/docs/index.html">Pipeline Web Page      |
-| Date of Last Code Update        | 2026-03-10 15:27:21           |
+| Date of Last Code Update        | 2026-03-11 10:39:46           |
 | OS Compatibility                |  |
 | Linked Dataframes               |  [P1:bond_prices](../dataframes/P1/bond_prices.md)<br>  [P1:cds](../dataframes/P1/cds.md)<br>  [P1:ratings](../dataframes/P1/ratings.md)<br>  [P1:matched_bond_cds](../dataframes/P1/matched_bond_cds.md)<br>  [P1:pecds](../dataframes/P1/pecds.md)<br>  [P1:basis](../dataframes/P1/basis.md)<br>  |
 

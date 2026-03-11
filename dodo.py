@@ -161,6 +161,17 @@ def task_pull():
         "file_dep": ["./src/settings.py", "./src/pull_CDS.py"],
         "clean": [],
     }
+    yield {
+        "name": "treasuries",
+        "doc": "Pull CRSP Treasury data from WRDS",
+        "actions": [
+            "ipython ./src/settings.py",
+            "ipython ./src/pull_CRSP_treasuries.py",
+        ],
+        "targets": [DATA_DIR / "CRSP_treasuries.parquet"],
+        "file_dep": ["./src/settings.py", "./src/pull_CRSP_treasuries.py"],
+        "clean": [],
+    }
 
 def task_filter():
     """Filter + match bonds to CDS (in-sample selection, but data stored through present day for extension)."""
@@ -194,6 +205,7 @@ def task_calc_pecds():
             "./src/settings.py",
             "./src/calc_PECDS.py",
             DATA_DIR / "matched_bond_cds.parquet",
+            DATA_DIR / "CRSP_treasuries.parquet",
         ],
         "targets": [DATA_DIR / "pecds.parquet"],
         "task_dep": ["filter"],

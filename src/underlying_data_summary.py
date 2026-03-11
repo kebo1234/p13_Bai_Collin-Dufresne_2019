@@ -1,6 +1,6 @@
 # src/underlying_data_summary.py
 """
-Creates summary table and one figure for the underlying data to provide background in final report.
+Creates summary table and figure for the underlying data to provide background in final report.
 
 Outputs:
     - _output/sample_summary_table.tex

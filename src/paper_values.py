@@ -1,3 +1,4 @@
+# src/paper_values.py
 """Published values from Bai, Collin-Dufresne (2019) Table 1 for comparison."""
 
 PAPER_TABLE1 = {

@@ -1,16 +1,13 @@
 # src/calc_PECDS.py
 """
-Calculate bond-implied CDS spreads (PECDS).
+Simplified calculation of bond-implied CDS spreads (PECDS).
 
-Bai, Collin-Dufresne (2019) - Simplified Implementation
-
-Instead of the full Appendix A methodology (which requires daily TRACE prices
-and swap rate curves), we use monthly bond yields from WRDS Bond Returns 
-and match them to treasuries using bond TTM and treasury duration, then 
-subtract treasury yields (risk-free rate) to get bond credit spreads as a proxy for PECDS.
+Instead of the full Appendix A methodology (which would require daily TRACE prices
+and swap rate curves), we match bond yields to Treasury yields using bond TTM and Treasury
+duration. We then subtract treasury yields from bond yields to get bond credit spreads as a proxy for PECDS.
 
 Simplified PECDS calculation:
-    PECDS = bond yield - corresponding treasury yield
+    PECDS = bond yield - corresponding Treasury yield
 
 Params:
     - matched_bond_cds.parquet
@@ -72,7 +69,7 @@ def calc_pecds(data_dir=DATA_DIR):
     df['date'] = pd.to_datetime(df['date'])
     treasuries['mcaldt'] = pd.to_datetime(treasuries['mcaldt'])
 
-    # CRITICAL FIX: Treasury yields in CRSP are DAILY yields, need to annualize
+    # Annualize Treasury yields
     treasuries['tmyld'] = treasuries['tmyld'] * 365
 
     # Convert to year-month for matching
@@ -83,11 +80,7 @@ def calc_pecds(data_dir=DATA_DIR):
     treasuries = treasuries[treasuries['tmduratn'].notna() & treasuries['tmyld'].notna()].copy()
 
     out = []
-
-    # Group by year-month instead of exact date
     treasury_by_month = {ym: g for ym, g in treasuries.groupby('year_month', sort=False)}
-
-    print(f"Processing {len(df):,} bond observations across {df['year_month'].nunique()} months...")
 
     for ym, bonds_month in df.groupby('year_month', sort=False):
         treas_month = treasury_by_month.get(ym)
@@ -100,12 +93,9 @@ def calc_pecds(data_dir=DATA_DIR):
         raise ValueError('No bond observations could be matched to Treasury observations.')
 
     result = pd.concat(out, ignore_index=True)
-
-    print(f"Successfully matched {len(result):,} observations ({len(result)/len(df)*100:.1f}% of original)")
-
     result['pecds'] = result['yield'] - result['matched_treasury_yield']
 
-    # Drop the temporary year_month column and convert back to string (Polars compatibility)
+    # Drop the temporary year_month column and convert back to string (for Polars compatibility)
     result['year_month'] = result['year_month'].astype(str)
 
     result.to_parquet(data_dir / 'pecds.parquet', index=False)

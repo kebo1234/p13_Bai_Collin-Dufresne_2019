@@ -9,8 +9,8 @@ def test_table1_values_within_tolerance():
     # Your replicated values
     table1 = pd.read_csv('_output/table1_replication.csv')
     
-    # Tolerance: ±450 bps for mean due to PECDS issue (waiting on professor)
-    # Once swap rates are added, reduce to ±50 bps
+    # Tolerance: ±450 bps for mean due to PECDS calculation crudeness
+    
     tolerance_mean = 450
     tolerance_sd_pct = 0.20
     

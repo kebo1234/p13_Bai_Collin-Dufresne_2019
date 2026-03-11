@@ -80,19 +80,9 @@ def filter_bonds(bond_prices):
     print(f"After removing missing company symbol: {len(df):,}")
 
     # Filter 6: Remove bonds with unrealistic yields (sanity filter)
-    # Allows for slightly negative yields (premium bonds, low-rate environment)
-    # Removes data errors in WRDS (e.g., yields of billions of percent)
+    # In other words, remove data errors in WRDS (e.g., yields of billions of percent)
     df = df[(df['yield'] > -0.05) & (df['yield'] < 1.0)]
     print(f"After yield sanity filter (-5% to 100%): {len(df):,}")
-    
-    # Filter 6: Keep only rated bonds
-    # df = df[df['rating_class'].notna()]
-    # print(f"After removing unrated bonds: {len(df):,}")
-    
-    # # Filter 7: Keep only corporate bond types
-    # corporate_bond_types = ['CDEB', 'CMTN', 'CMTZ', 'CZ', 'USBN']
-    # df = df[df['bond_type'].isin(corporate_bond_types)]
-    # print(f"After keeping only corporate bond types: {len(df):,}")
     
     return df
 
@@ -102,7 +92,6 @@ def filter_cds(cds_df):
     Filter CDS data per paper's criteria:
         - USD only
         - 5-year tenor (most liquid)
-        - Sample period
     
     Note: Paper uses MR (Modified Restructuring) clause, but our data
     only contains XR14 and XR. We skip docclause filtering to keep all data.

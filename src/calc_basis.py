@@ -3,6 +3,9 @@
 Compute CDS-bond basis from PECDS according to Equation (1) in Section 2 of the paper:
     - basis = cds_spread - pecds
 
+Additionally, to be used in figures/tables:
+    - basis_bps = 10,000 * basis
+
 Input:
     - pecds.parquet
 

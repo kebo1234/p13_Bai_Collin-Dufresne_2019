@@ -1,16 +1,9 @@
+# src/pull_LSEG_Mergent.py
 """
-This module pulls and saves bond ratings data from Mergent FISD 
-(Fixed Income Securities Database).
-
-The Mergent FISD database contains comprehensive information on publicly offered
-U.S. corporate bonds, including:
+Pulls and bond ratings data from Mergent FISD (Fixed Income Securities Database):
 - Bond characteristics (issue date, maturity, coupon, etc.)
 - Credit ratings from major agencies (S&P, Moody's, Fitch)
 - Issuer information
-
-For information about Mergent FISD variables, see:
-https://wrds-www.wharton.upenn.edu/documents/1364/Mergent_FISD_Manual.pdf
-
 """
 
 from pathlib import Path
@@ -300,21 +293,6 @@ def load_mergent_fisd_ratings(data_dir=DATA_DIR):
     path = Path(data_dir) / "Mergent_FISD_ratings.parquet"
     fisd_ratings = pd.read_parquet(path)
     return fisd_ratings
-
-
-def _demo():
-    """Demonstrate loading and processing the saved data."""
-    fisd_issue = load_mergent_fisd_issue(data_dir=DATA_DIR)
-    fisd_ratings = load_mergent_fisd_ratings(data_dir=DATA_DIR)
-    
-    # Merge issue and ratings
-    merged = merge_issue_ratings(fisd_issue, fisd_ratings)
-    
-    # Show example of S&P ratings
-    sp_ratings = filter_sp_ratings(merged)
-
-    # Show example of monthly panel
-    monthly_sp = process_ratings_to_monthly(merged, rating_type='SPR')
     
 if __name__ == "__main__":
     # Pull and save Mergent FISD issue data

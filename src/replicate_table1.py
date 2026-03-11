@@ -1,3 +1,4 @@
+# src/replicate_table1.py
 """
 Replicate Table 1 from Bai, Collin-Dufresne (2019).
 

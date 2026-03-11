@@ -194,6 +194,16 @@ def task_filter():
         "clean": True,
     }
 
+# Unit test for data
+def task_test_data_quality():
+    """Test data quality after filtering"""
+    return {
+        'actions': ['pytest tests/test_data_quality.py tests/test_filters.py -v'],
+        'file_dep': [DATA_DIR / 'matched_bond_cds.parquet'],
+        'task_dep': ['filter'],
+        'verbosity': 2,
+    }
+
 def task_calc_pecds():
     """Compute PECDS."""
     return {
@@ -223,6 +233,17 @@ def task_calc_basis():
     }
 
 
+# Unit test to ensure pipeline is working for all data cleaning + calculations
+def task_test_pipeline():
+    """Test pipeline integrity after calculations"""
+    return {
+        'actions': ['pytest tests/test_pipeline.py -v'],
+        'file_dep': [DATA_DIR / 'basis.parquet'],
+        'task_dep': ['calc_basis'],
+        'verbosity': 2,
+    }
+
+
 def task_outputs():
     """Generate Figure 1 (png+html), Table 1 (tex), and descriptive outputs."""
     return {
@@ -248,6 +269,20 @@ def task_outputs():
         ],
         "task_dep": ["calc_basis"],
         "clean": True,
+    }
+
+
+# Unit test for how close replication was to paper
+def task_test_replication():
+    """Test replication quality after generating outputs"""
+    return {
+        'actions': ['pytest tests/test_replication.py -v'],
+        'file_dep': [
+            OUTPUT_DIR / 'table1_replication.tex',
+            OUTPUT_DIR / 'replication_figure1.png'
+        ],
+        'task_dep': ['outputs'],
+        'verbosity': 2,
     }
 
 
@@ -352,34 +387,4 @@ def task_build_chartbook_site():
             "outputs",
         ],
         "clean": True,
-    }
-
-def task_test_data_quality():
-    """Test data quality after filtering"""
-    return {
-        'actions': ['pytest tests/test_data_quality.py tests/test_filters.py -v'],
-        'file_dep': [DATA_DIR / 'matched_bond_cds.parquet'],
-        'task_dep': ['filter'],
-        'verbosity': 2,
-    }
-
-def task_test_pipeline():
-    """Test pipeline integrity after calculations"""
-    return {
-        'actions': ['pytest tests/test_pipeline.py -v'],
-        'file_dep': [DATA_DIR / 'basis.parquet'],
-        'task_dep': ['calc_basis'],
-        'verbosity': 2,
-    }
-
-def task_test_replication():
-    """Test replication quality after generating outputs"""
-    return {
-        'actions': ['pytest tests/test_replication.py -v'],
-        'file_dep': [
-            OUTPUT_DIR / 'table1_replication.tex',
-            OUTPUT_DIR / 'replication_figure1.png'
-        ],
-        'task_dep': ['outputs'],
-        'verbosity': 2,
     }

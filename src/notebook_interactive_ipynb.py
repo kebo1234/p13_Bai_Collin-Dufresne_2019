@@ -87,7 +87,7 @@ if "issue_id" in matched.columns:
 # %% [markdown]
 # ## 3. Construction of PECDS
 #
-# In this simplified replication, PECDS is proxied by bond yield - Treasury yield (procy for risk-free rate):
+# In this simplified replication, PECDS is proxied by bond yield - Treasury yield (proxy for risk-free rate):
 #
 # `pecds = Bond yield - Treasury yield`,
 #
@@ -182,7 +182,7 @@ table1_replication
 # %% [markdown]
 # ### Table 1: Extension Period
 #
-# Summary statistics for the extended period (January 2015 - Present).
+# Summary statistics for the extended period (January 2015 - March 2022).
 
 # %%
 table1_extension = pd.read_csv(OUTPUT_DIR / "table1_extension.csv")

@@ -6,7 +6,7 @@ Bond prices/yields used to proxy PECDS and match to CDS.
 ## DataFrame Glimpse
 
 ```
-Rows: 3475149
+Rows: 3682819
 Columns: 12
 $ date           <datetime[ns]> 2006-07-31 00:00:00
 $ issue_id                <f64> 5.0
@@ -54,7 +54,7 @@ $ rating_class            <str> '0.IG'
 | Contributors                    | Nicholas Kebo & Lucie Martin           |
 | Git Repo URL                    |                         |
 | Pipeline Web Page               | <a href="file:///Users/kebo/Downloads/MS FinMath/Courses/Full Stack/p13_Bai_Collin-Dufresne_2019/docs/index.html">Pipeline Web Page      |
-| Date of Last Code Update        | 2026-03-11 10:39:46           |
+| Date of Last Code Update        | 2026-03-11 13:30:24           |
 | OS Compatibility                |  |
 | Linked Dataframes               |  [P1:bond_prices](../dataframes/P1/bond_prices.md)<br>  [P1:cds](../dataframes/P1/cds.md)<br>  [P1:ratings](../dataframes/P1/ratings.md)<br>  [P1:matched_bond_cds](../dataframes/P1/matched_bond_cds.md)<br>  [P1:pecds](../dataframes/P1/pecds.md)<br>  [P1:basis](../dataframes/P1/basis.md)<br>  |
 

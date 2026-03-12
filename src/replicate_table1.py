@@ -244,6 +244,7 @@ def export_to_latex_replication(table1, filename="table1_replication.tex"):
 \centering
 \caption{Summary statistics of discrepancies in CDS and cash bond spreads (Replication Period)}
 \label{tab:table1_replication}
+\resizebox{\textwidth}{!}{%
 \small
 \begin{tabular}{l rrrr rrrr rrrr rrrr}
 \hline\hline
@@ -277,6 +278,7 @@ def export_to_latex_replication(table1, filename="table1_replication.tex"):
     
     latex_str += r"""\hline\hline
 \end{tabular}
+}
 \begin{flushleft}
 \footnotesize
 \textit{Notes:} This table replicates Table 1 from Bai and Collin-Dufresne (2019), showing descriptive statistics for the average CDS-bond basis across four crisis phases. All entries are in basis points.
@@ -291,7 +293,7 @@ def export_to_latex_replication(table1, filename="table1_replication.tex"):
 
 
 def export_to_latex_extension(table1, filename="table1_extension.tex"):
-    """Export Table 1 extension (2015-present) to LaTeX format"""
+    """Export Table 1 extension (2015-2022) to LaTeX format"""
     
     latex_str = r"""\begin{table}[htbp]
 \centering
@@ -302,7 +304,7 @@ def export_to_latex_extension(table1, filename="table1_extension.tex"):
 \hline\hline
 & \multicolumn{4}{c}{Extended Period} \\
 \cline{2-5}
-& \multicolumn{4}{c}{Jan. 2015--Present} \\
+& \multicolumn{4}{c}{Jan. 2015--2022} \\
 \cline{2-5}
 & Mean & SD & P10 & P90 \\
 \hline
@@ -327,7 +329,7 @@ def export_to_latex_extension(table1, filename="table1_extension.tex"):
 \end{tabular}
 \begin{flushleft}
 \footnotesize
-\textit{Notes:} This table extends the analysis to the period January 2015 through present. All entries are in basis points.
+\textit{Notes:} This table extends the analysis to the period January 2015 through 2022. The extension period ends in March 2022 because bonds that were 3--7.5 years to maturity during the replication period (2006--2014) have aged out of this maturity window by 2022. Including bonds issued after 2014 would require expanding the sample beyond the original companies studied in the replication period. All entries are in basis points.
 \end{flushleft}
 \end{table}
 """

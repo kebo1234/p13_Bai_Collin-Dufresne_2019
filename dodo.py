@@ -238,11 +238,15 @@ def task_test_pipeline():
     """Test pipeline integrity after calculations"""
     return {
         'actions': ['pytest tests/test_pipeline.py -v'],
-        'file_dep': [DATA_DIR / 'basis.parquet'],
-        'task_dep': ['calc_basis'],
+        'file_dep': [
+            DATA_DIR / 'basis.parquet',
+            OUTPUT_DIR / 'table1_replication.tex',
+            OUTPUT_DIR / 'replication_figure1.png',
+            OUTPUT_DIR / 'extension_figure1.png',
+        ],
+        'task_dep': ['calc_basis', 'outputs'],  # Added 'outputs' dependency
         'verbosity': 2,
     }
-
 
 def task_outputs():
     """Generate Figure 1 (png+html), Table 1 (tex), and descriptive outputs."""

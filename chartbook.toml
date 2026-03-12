@@ -56,7 +56,7 @@ dataframe_docs_str = "Bond ratings data used to tag IG vs HY."
 date_col = "rating_date"
 
 [dataframes.matched_bond_cds]
-data_sources = ["Constructed: bond–CDS matched panel"]
+data_sources = ["Constructed bond-CDS matched panel"]
 data_providers = ["Internal"]
 how_is_pulled = "Built by src/filter_data.py by matching bond monthly to CDS daily by ticker and month"
 path_to_parquet_data = "_data/matched_bond_cds.parquet"
@@ -64,7 +64,7 @@ dataframe_docs_str = "Matched panel used to compute PECDS and basis."
 date_col = "date"
 
 [dataframes.pecds]
-data_sources = ["Constructed: PECDS proxy"]
+data_sources = ["Constructed PECDS proxy"]
 data_providers = ["Internal"]
 how_is_pulled = "Built by src/calc_PECDS.py"
 path_to_parquet_data = "_data/pecds.parquet"
@@ -72,18 +72,18 @@ dataframe_docs_str = "Bond-implied CDS spread proxy (PECDS)."
 date_col = "date"
 
 [dataframes.basis]
-data_sources = ["Constructed: CDS–bond basis"]
+data_sources = ["Constructed CDS-bond basis"]
 data_providers = ["Internal"]
 how_is_pulled = "Built by src/calc_basis.py"
 path_to_parquet_data = "_data/basis.parquet"
-dataframe_docs_str = "Basis = CDS spread − PECDS proxy; used for Table 1 and Figure 1."
+dataframe_docs_str = "Basis = CDS spread - PECDS proxy; used for Table 1 and Figure 1."
 date_col = "date"
 
 
 [charts]
 
 [charts.figure1_replication]
-chart_name = "Figure 1 (Replication Window): CDS–Bond Basis"
+chart_name = "Figure 1 (Replication Window) CDS-Bond Basis"
 short_description_chart = "Median basis with 10th/90th percentiles for IG and HY, through SAMPLE_END_DATE."
 dataframe_id = "basis"
 path_to_html_chart = "_output/replication_figure1.html"
@@ -96,7 +96,7 @@ data_release_timing = "historical"
 units = "basis points"
 
 [charts.figure1_extension]
-chart_name = "Figure 1 (Extended): CDS–Bond Basis"
+chart_name = "Figure 1 (Extended) CDS-Bond Basis"
 short_description_chart = "Same as Figure 1 but extended through END_DATE."
 dataframe_id = "basis"
 path_to_html_chart = "_output/extension_figure1.html"

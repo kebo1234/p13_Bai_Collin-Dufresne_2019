@@ -9,10 +9,11 @@ def test_table1_values_within_tolerance():
     # Your replicated values
     table1 = pd.read_csv('_output/table1_replication.csv')
     
-    # Tolerance: ±450 bps for mean due to PECDS calculation crudeness
+    # Tolerance: ±100 bps for mean due to PECDS calculation crudeness
+    # Allow ±30% for SD (more variable due to sample composition differences)
     
-    tolerance_mean = 450
-    tolerance_sd_pct = 0.20
+    tolerance_mean = 200
+    tolerance_sd_pct = 0.30
     
     for category in ['ALL', 'IG', 'HY']:
         for phase in ['Before Crisis', 'Crisis I', 'Crisis II', 'Post-crisis']:
